@@ -232,6 +232,19 @@ footer.end .sig{ margin-top:28px; }
 </style>
 <style>.bar{ background:rgba(7,9,12,.72) !important; } .bar .who{ font-family:var(--body); letter-spacing:0; } .bar nav a{ font-family:var(--body) !important; letter-spacing:0 !important; text-transform:none !important; font-size:.84rem !important; border-radius:7px !important; } .bar nav a[aria-current="true"]{ color:var(--fg) !important; background:var(--accent-soft) !important; box-shadow:inset 0 0 0 1px var(--accent-line); } .hud{ font-family:var(--mono); }</style>
 <style>.hero{ background:none !important; } .hero h1{ font-size:clamp(2.2rem,5.5vw,3.4rem) !important; font-weight:700 !important; } section.s.blue{ background:none !important; } .bar{ background:rgba(0,0,0,.85) !important; } .chips{ display:grid !important; } .eyebrow::before{ display:none !important; }</style>
+<style>
+.cmp{ margin-top:14px; border-top:1px solid var(--line); }
+.cmp-row{ display:grid; grid-template-columns:170px minmax(0,1fr); gap:6px 24px; padding:18px 0; border-bottom:1px solid var(--line); }
+.cmp-name{ font-family:var(--display); font-weight:600; font-size:1.05rem; }
+.cmp-row.win .cmp-name::after{ content:"The deciding factor"; display:block; margin-top:2px; font-family:var(--body); font-weight:400; font-size:.8rem; color:var(--muted); }
+.cmp-bars{ display:grid; gap:6px; }
+.cmp-bar{ display:grid; grid-template-columns:44px minmax(0,1fr) 84px; align-items:center; gap:10px; font-size:.86rem; color:var(--muted); }
+.cmp-bar i{ display:block; height:8px; border-radius:4px; background:var(--line2); }
+.cmp-bar.petg i{ background:var(--fg); }
+.cmp-bar b{ font-weight:500; color:var(--fg); text-align:right; }
+.cmp-row p{ grid-column:2; color:var(--muted); font-size:.95rem; }
+@media (max-width:600px){ .cmp-row{ grid-template-columns:1fr; } .cmp-row p{ grid-column:1; } }
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -348,17 +361,8 @@ footer.end .sig{ margin-top:28px; }
 <section class="s" id="failure">
   <div class="wrap">
     <div class="label">Design failure and fix</div>
-    <h2>The PLA frame bent under load and tilted the whole rover</h2>
-    <p class="lede">The first frame was printed in PLA. With the batteries, motors and wheels fitted, it bent so easily that the rover tilted off balance. My teacher recommended PETG, and the reprinted frame bent less under the same load.</p>
-
-    <div class="split">
-      <ul class="ticks">
-        <li><strong>Symptom:</strong> under the full load, the PLA frame bent and tilted the rover, shifting the balance of every component mounted on it.</li>
-        <li><strong>Why it matters:</strong> a tilted frame changes how the wheels meet the ground and where anything mounted on it points, which undermines timed moves and sensor readings.</li>
-        <li><strong>Evidence:</strong> I did not photograph the failure, so the model below is a schematic of it, exaggerated for clarity and not measured.</li>
-      </ul>
-      <div class="callout amber" style="margin-top:0"><strong>Root cause.</strong> A constant bending load on thin, low-ductility bend zones caused local yielding and creep. The permanent set left the frame sagging, and the rover tilted.</div>
-    </div>
+    <h2>Why the frame went from PLA to PETG</h2>
+    <p class="lede">The first frame was printed in PLA. Under the weight of the batteries, motors and wheels it sagged and tilted the whole rover. On my teacher's recommendation I reprinted the same design in PETG, and it held level.</p>
 
     <div class="lab">
       <div class="panel">
@@ -377,67 +381,40 @@ footer.end .sig{ margin-top:28px; }
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="panel">
-        <header><span class="label">Stress–strain explorer · printed PLA vs printed PETG</span></header>
-        <div class="body">
-          <div class="range"><label class="label" for="eps">Strain ε</label><input id="eps" type="range" min="0" max="8" step="0.05" value="2.9"><span class="mono" id="epsv" style="min-width:4.2ch;text-align:right">2.9 %</span></div>
-          <div class="ss">
-            <svg id="ssplot" viewBox="0 0 560 330" role="img" aria-label="Stress–strain curves for printed PLA and PETG with a movable strain marker"></svg>
-            <div class="readouts">
-              <div class="ro pla"><h4><span>PLA</span><span class="st" id="plast"></span></h4><dl><dt>Stress σ</dt><dd id="plas"></dd><dt>Energy absorbed</dt><dd id="plae"></dd></dl></div>
-              <div class="ro petg"><h4><span>PETG</span><span class="st" id="petgst"></span></h4><dl><dt>Stress σ</dt><dd id="petgs"></dd><dt>Energy absorbed</dt><dd id="petge"></dd></dl></div>
-              <p class="src" style="margin:0">Drag the slider. PLA yields at 2.9% strain, PETG at 5.9%. The area under each curve is the energy absorbed per unit volume. Curve shapes are sketched between datasheet points.</p>
-            </div>
-          </div>
+    <h3 class="h" style="margin-top:40px">The choice, in three numbers</h3>
+    <div class="cmp">
+      <div class="cmp-row win">
+        <div class="cmp-name">Strain at yield</div>
+        <div class="cmp-bars">
+          <div class="cmp-bar"><span>PLA</span><i style="width:49%"></i><b class="num">2.9%</b></div>
+          <div class="cmp-bar petg"><span>PETG</span><i style="width:100%"></i><b class="num">5.9%</b></div>
         </div>
+        <p>PETG bends about twice as far before it deforms permanently.</p>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">Glass transition, T<sub>g</sub></div>
+        <div class="cmp-bars">
+          <div class="cmp-bar"><span>PLA</span><i style="width:75%"></i><b class="num">55–60 °C</b></div>
+          <div class="cmp-bar petg"><span>PETG</span><i style="width:100%"></i><b class="num">~77 °C</b></div>
+        </div>
+        <p>PETG softens later, so it resists creep next to warm batteries and motors.</p>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">Young's modulus, E</div>
+        <div class="cmp-bars">
+          <div class="cmp-bar"><span>PLA</span><i style="width:100%"></i><b class="num">2.2 GPa</b></div>
+          <div class="cmp-bar petg"><span>PETG</span><i style="width:86%"></i><b class="num">1.9 GPa</b></div>
+        </div>
+        <p>PLA is actually slightly stiffer. Stiffness was never the problem.</p>
       </div>
     </div>
 
-    <div class="terms">
-      <div class="term"><h3>Stress</h3><p>Stress (σ) is load per unit area. In bending, σ = M·c / I. The weight of the batteries, motors and wheels created a bending moment that concentrated stress in the thin bend zones.</p></div>
-      <div class="term"><h3>Strain</h3><p>Strain (ε) is deformation per unit length. In the elastic range σ = E·ε and the part springs back. Past the elastic limit the strain no longer recovers.</p></div>
-      <div class="term"><h3>Young's modulus</h3><p>Young's modulus (E) is stiffness in the elastic range. Beam stiffness scales with E·I, and I = b·t³ / 12, so thin sections are extremely sensitive to thickness.</p></div>
-      <div class="term"><h3>Yield and ductility</h3><p>Yield strength marks where permanent (plastic) deformation starts. Ductility is the strain a material tolerates. Printed PLA yields at only about 3% strain.</p></div>
-      <div class="term"><h3>Creep</h3><p>Slow permanent deformation under constant load. PLA softens at about 55 to 60&nbsp;°C (its glass transition), so warm batteries and motors can speed it up.</p></div>
-      <div class="term root"><h3>Why PETG</h3><p>Printed PETG is not stiffer than PLA. The gain is in how it behaves once the bend zones are loaded: about twice the strain at yield, more energy absorbed before failure, and a higher glass transition.</p></div>
-    </div>
-
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Property</th><th>PLA</th><th>PETG</th><th>What it means for the frame</th></tr></thead>
-        <tbody>
-          <tr><td>Young's modulus, E</td><td class="n">2.2 GPa</td><td class="n">1.9 GPa</td><td>Elastic stiffness. PLA is slightly stiffer.</td></tr>
-          <tr><td>Tensile yield strength, σy</td><td class="n">51 MPa</td><td class="n">46 MPa</td><td>Similar strength, so not the deciding factor.</td></tr>
-          <tr><td>Strain at yield</td><td class="n">2.9%</td><td class="n">5.9%</td><td>How far it bends before it deforms permanently.</td></tr>
-          <tr><td>Glass transition, Tg</td><td class="n">about 55–60&nbsp;°C</td><td class="n">about 77&nbsp;°C</td><td>Creep resistance near warm batteries and motors.</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="src">Typical datasheet values for printed specimens in the flat (XY) direction: <a href="https://cdn.shopify.com/s/files/1/1745/6181/files/PRUSA_PLA_TechSheet_ENG.pdf" target="_blank" rel="noopener">Prusament PLA</a> (ISO 527) and <a href="https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf" target="_blank" rel="noopener">Ultimaker PETG</a> (ASTM D3039). Test methods and printers differ, so compare the trends, not the decimals. The PLA sheet reports yield only, so its curve stops there.</p>
-
-    <div class="split">
-      <div>
-        <h3 class="h">Result</h3>
-        <ul class="ticks" style="margin-top:12px">
-          <li>Same geometry and bend lines, reprinted in PETG.</li>
-          <li>Under the same load of batteries, motors and wheels, the PETG frame bent noticeably less and the rover's balance held.</li>
-          <li>Final frame mass: <strong>62 g</strong>.</li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="h">If it needed more</h3>
-        <ul class="ticks" style="margin-top:12px">
-          <li><strong>Thicker bend zones:</strong> stiffness scales with t³, so 50% more thickness gives about 3.4× the bending stiffness.</li>
-          <li><strong>Print orientation:</strong> PETG's layer-to-layer strength is about half its in-plane strength (19 against 38.5 MPa at break), so keep bends from peeling layers apart.</li>
-          <li><strong>Check first:</strong> estimate deflection with δ = F·L³ / (3·E·I) before printing.</li>
-        </ul>
-      </div>
-    </div>
+    <div class="callout"><strong>What actually failed.</strong> The PLA wasn't too flexible. Its thin bend zones carried a constant bending load, yielded at under 3% strain and crept, leaving a permanent sag. PETG takes roughly twice the strain before yielding, so the same geometry stayed level. Final frame mass: 62 g.</div>
+    <p class="src">Typical datasheet values for printed specimens (<a href="https://cdn.shopify.com/s/files/1/1745/6181/files/PRUSA_PLA_TechSheet_ENG.pdf" target="_blank" rel="noopener">Prusament PLA</a>, <a href="https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf" target="_blank" rel="noopener">Ultimaker PETG</a>). Compare the trends, not the decimals. The tilt view is a schematic, exaggerated for clarity.</p>
   </div>
 </section>
-
-<!-- ================= ELECTRONICS ================= -->
 <section class="s blue" id="electronics">
   <div class="wrap">
     <div class="label">Electronics and sensors</div>
@@ -526,8 +503,6 @@ footer.end .sig{ margin-top:28px; }
           <li>Calibrating turns by hand until the rover hit each corner.</li>
           <li>Smoothing the light signal so the stop point was consistent.</li>
           <li>Designing the mounts around the sensors, not the other way round.</li>
-          <li>Putting bend lines where I predicted the frame would flex under the weight of the batteries, motors and wheels. It bent at those lines.</li>
-          <li>Treating the tilting PLA frame as a materials problem and fixing it by moving to PETG.</li>
         </ul>
       </div>
       <div>
@@ -632,52 +607,6 @@ footer.end .sig{ margin-top:28px; }
   }
   $$('.seg button').forEach(function(b){ b.addEventListener('click', function(){ setState(b.dataset.state); }); });
   drawTilt(0,0);
-
-  /* ---------- stress-strain explorer ---------- */
-  var PLA  = [[0,0],[0.5,11],[1,22],[1.5,32],[2,41],[2.5,47.5],[2.9,51]];
-  var PETG = [[0,0],[0.5,9.5],[1,19],[2,33.5],[3,41],[4,44.5],[5,45.8],[5.9,46],[6.8,43],[7.6,38.5]];
-  var ss = $('#ssplot'), L = 62, R = 540, T = 24, B = 290;
-  function X(e){ return L + (R-L)*e/8; } function Y(s){ return B - (B-T)*s/60; }
-  function sigma(arr,e){ if (e > arr[arr.length-1][0]) return null; for (var i=1;i<arr.length;i++){ if (e <= arr[i][0]){ var a=arr[i-1], b=arr[i]; return a[1] + (b[1]-a[1])*(e-a[0])/(b[0]-a[0]); } } return arr[arr.length-1][1]; }
-  function energy(arr,e){ var tot = 0, prev = arr[0]; for (var i=1;i<arr.length;i++){ var pt = arr[i]; if (e <= prev[0]) break; var hi = Math.min(e, pt[0]), sh = prev[1] + (pt[1]-prev[1])*(hi-prev[0])/(pt[0]-prev[0]); tot += (prev[1]+sh)/2*(hi-prev[0]); if (e <= pt[0]) break; prev = pt; } return tot/100; }
-  var pts = function(arr,e){ var out = []; arr.forEach(function(p){ if (p[0] <= e) out.push(p); }); var s = sigma(arr,e); if (s !== null && (!out.length || out[out.length-1][0] < e)) out.push([e,s]); return out; };
-  var path = function(arr){ return arr.map(function(p,i){ return (i?'L':'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1); }).join(''); };
-  var grid = '';
-  [0,20,40,60].forEach(function(m){ grid += '<line class="gline" x1="'+L+'" x2="'+R+'" y1="'+Y(m)+'" y2="'+Y(m)+'"/><text class="t-muted" x="'+(L-8)+'" y="'+(Y(m)+3)+'" text-anchor="end" font-size="10">'+m+'</text>'; });
-  [0,2,4,6,8].forEach(function(e){ grid += '<line class="gline" y1="'+T+'" y2="'+B+'" x1="'+X(e)+'" x2="'+X(e)+'"/><text class="t-muted" x="'+X(e)+'" y="'+(B+16)+'" text-anchor="middle" font-size="10">'+e+'</text>'; });
-  ss.innerHTML = grid +
-    '<line class="axis" x1="'+L+'" x2="'+R+'" y1="'+B+'" y2="'+B+'"/><line class="axis" x1="'+L+'" x2="'+L+'" y1="'+T+'" y2="'+B+'"/>' +
-    '<text class="t-fg" x="'+((L+R)/2)+'" y="'+(B+36)+'" text-anchor="middle" font-size="11">Strain ε (%)</text>' +
-    '<text class="t-fg" x="16" y="'+((T+B)/2)+'" text-anchor="middle" font-size="11" transform="rotate(-90 16 '+((T+B)/2)+')">Stress σ (MPa)</text>' +
-    '<path id="areaPetg" fill="var(--accent)" opacity=".16"/><path id="areaPla" fill="var(--amber)" opacity=".26"/>' +
-    '<path d="'+path(PETG)+'" fill="none" stroke="var(--accent)" stroke-width="2.2"/>' +
-    '<path d="'+path(PLA)+'" fill="none" stroke="var(--amber)" stroke-width="2.2"/>' +
-    '<circle cx="'+X(2.9)+'" cy="'+Y(51)+'" r="4" fill="var(--bg)" stroke="var(--amber)" stroke-width="2"/>' +
-    '<circle cx="'+X(5.9)+'" cy="'+Y(46)+'" r="4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>' +
-    '<path d="M'+(X(7.6)-4)+' '+(Y(38.5)-4)+'l8 8m0 -8l-8 8" stroke="var(--accent)" stroke-width="2"/>' +
-    '<text class="t-amber" x="'+(X(2.9)-8)+'" y="'+(Y(51)-10)+'" text-anchor="end" font-size="10">PLA yields 2.9%</text>' +
-    '<text class="t-accent" x="'+X(5.9)+'" y="'+(Y(46)-11)+'" text-anchor="middle" font-size="10">PETG yields 5.9%</text>' +
-    '<text class="t-accent" x="'+(X(7.6)+2)+'" y="'+(Y(38.5)+18)+'" text-anchor="end" font-size="10">fracture 7.6%</text>' +
-    '<line id="mk" stroke="var(--fg)" stroke-dasharray="4 4" y1="'+T+'" y2="'+B+'"/>' +
-    '<circle id="dPla" r="5" fill="var(--amber)" stroke="var(--bg)" stroke-width="1.5"/><circle id="dPetg" r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="1.5"/>';
-  function area(arr,e,id){ var p = pts(arr,e); if (p.length < 2){ $(id).setAttribute('d',''); return; } $(id).setAttribute('d', path(p) + 'L'+X(p[p.length-1][0]).toFixed(1)+' '+B+'L'+X(0)+' '+B+'Z'); }
-  var fmt = function(v,u){ return v.toFixed(1) + ' ' + u; };
-  function update(){
-    var e = parseFloat($('#eps').value); $('#epsv').textContent = e.toFixed(1) + ' %';
-    $('#mk').setAttribute('x1', X(e)); $('#mk').setAttribute('x2', X(e));
-    var sp = sigma(PLA,e), sg = sigma(PETG,e);
-    var dp = $('#dPla'), dg = $('#dPetg');
-    if (sp === null){ dp.setAttribute('opacity',0); } else { dp.setAttribute('opacity',1); dp.setAttribute('cx',X(e)); dp.setAttribute('cy',Y(sp)); }
-    if (sg === null){ dg.setAttribute('opacity',0); } else { dg.setAttribute('opacity',1); dg.setAttribute('cx',X(e)); dg.setAttribute('cy',Y(sg)); }
-    area(PLA,e,'#areaPla'); area(PETG,e,'#areaPetg');
-    $('#plas').textContent = sp === null ? 'no data past yield' : fmt(sp,'MPa');
-    $('#plae').textContent = fmt(energy(PLA,Math.min(e,2.9)),'MJ/m³') + (e > 2.9 ? ' at yield' : '');
-    $('#plast').textContent = e < 2.9 ? 'below yield' : (e === 2.9 ? 'at yield' : 'past yield');
-    $('#petgs').textContent = sg === null ? 'fractured' : fmt(sg,'MPa');
-    $('#petge').textContent = fmt(energy(PETG,Math.min(e,7.6)),'MJ/m³');
-    $('#petgst').textContent = e > 7.6 ? 'fractured' : (e < 5.9 ? 'below yield' : 'past yield');
-  }
-  $('#eps').addEventListener('input', update); update();
 
   /* ---------- version tabs ---------- */
   var V = [
