@@ -152,3 +152,6 @@ td.n,th.n{ font-family:var(--mono); white-space:nowrap; text-align:right; }
 /* rover CAD sheet: full width, natural aspect */
 .sheet button.zoom{ padding:12px; }
 .sheet button.zoom img{ width:100%; max-width:none; height:auto; aspect-ratio:4/3; object-fit:contain; }
+/* previous / next project links: breathing room below */
+.pnav{ margin-top:16px; margin-bottom:96px; }
+@media (max-width:600px){ .pnav{ margin-bottom:64px; } }
