@@ -179,12 +179,4 @@ dialog.lb p{ font-family:var(--body); letter-spacing:0; }
 .term h3{ color:var(--fg) !important; }
 .spec dt{ color:var(--fg) !important; }
 section.s{ padding-top:60px; }
-
-/* blue accent on project pages */
-.evo-tabs button[aria-selected="true"]{ color:var(--blue); box-shadow:inset 0 -2px 0 var(--blue); }
-.seg button[aria-pressed="true"]{ background:var(--blue); color:#000; }
-.sec-bar nav a[aria-current="true"]{ color:var(--blue) !important; box-shadow:inset 0 0 0 1px var(--accent-line); background:var(--accent-soft); }
-.spec dt{ color:var(--blue) !important; }
-.term h3{ color:var(--blue) !important; }
-.p-hero h1 em{ color:var(--blue); }
 @media (min-width:761px){ .evo-tabs{ grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); } }
