@@ -25,6 +25,7 @@
 html{ scroll-padding-top:24px; }
 body{ margin:0; background:var(--bg); color:var(--fg); font-family:var(--body); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; overflow-x:clip; }
 img,svg,video{ max-width:100%; }
+img{ height:auto; }
 a{ color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
 h1,h2,h3,h4{ font-family:var(--display); font-weight:600; letter-spacing:-.01em; margin:0; color:var(--fg); }
 p{ margin:0; }
@@ -148,3 +149,6 @@ td.n,th.n{ font-family:var(--mono); white-space:nowrap; text-align:right; }
 .end-space{ height:72px; }
 .reveal{ opacity:1 !important; transform:none !important; }
 .tl-logo img{ padding:3px; }
+/* rover CAD sheet: full width, natural aspect */
+.sheet button.zoom{ padding:12px; }
+.sheet button.zoom img{ width:100%; max-width:none; height:auto; aspect-ratio:4/3; object-fit:contain; }
