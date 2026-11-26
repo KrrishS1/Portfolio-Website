@@ -368,3 +368,4 @@ a.card:hover, .soc:hover, .club-idx a:hover{ border-color:var(--line); }
 .site-nav a{ transition:none; }
 @media (max-width:640px){ .site-nav .cta{ display:inline-block; margin-left:4px; padding:6px 9px; } }
 @media (max-width:480px){ .brand{ display:none; } .site-bar .wrap{ justify-content:center; } }
+main > .hero:last-child{ border-bottom:0; }
