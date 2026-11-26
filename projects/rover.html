@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en" class="js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Autonomous Obstacle-Course Rover | Krrish Shah</title>
+<meta name="description" content="Krrish Shah's autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
+<link rel="canonical" href="https://krrishshah.com/projects/rover.html">
+<meta property="og:title" content="Autonomous Obstacle-Course Rover | Krrish Shah">
+<meta property="og:description" content="Krrish Shah's autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://krrishshah.com/projects/rover.html">
+<meta property="og:image" content="https://krrishshah.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/site.css">
+<style>
+/* Layout concept: a flight-data recorder. One dark console, a live readout bar that tracks the section,
+   teal for signal, amber for the failure story, blueprint grid behind the engineering drawings. */
+
+
+
+/* ---------- readout bar ---------- */
+.bar{ position:sticky; top:54px; z-index:50; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+.bar .wrap{ display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:52px; }
+.bar .who{ font-family:var(--mono); font-size:.78rem; letter-spacing:.06em; white-space:nowrap; }
+.bar .who b{ color:var(--accent); font-weight:500; }
+.bar nav{ display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; }
+.bar nav::-webkit-scrollbar{ display:none; }
+.bar nav a{ font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:3px; white-space:nowrap; }
+.bar nav a:hover{ color:var(--fg); }
+.bar nav a[aria-current="true"]{ color:var(--accent-ink); background:var(--accent); }
+.progress{ height:2px; background:var(--line); }
+.progress i{ display:block; height:100%; width:0; background:var(--accent); }
+@media (max-width:760px){ .bar .who span{ display:none; } }
+
+/* ---------- hero ---------- */
+.hero{ position:relative; overflow:hidden; border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(900px 420px at 78% 10%, var(--accent-soft), transparent 70%),
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/44px 44px; }
+.hero .wrap{ display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:48px; align-items:center; padding-block:64px 72px; }
+.hero h1{ font-size:clamp(2.5rem,6.4vw,5.2rem); line-height:.98; letter-spacing:-.035em; font-weight:700; margin-top:18px; }
+.hero h1 em{ font-style:normal; color:var(--accent); }
+.hero .sub{ margin-top:22px; max-width:52ch; font-size:1.12rem; color:var(--muted); }
+.chips{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; margin-top:34px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.chips div{ padding:14px 16px 14px 0; }
+.chips div + div{ padding-left:16px; border-left:1px solid var(--line); }
+.chips strong,.titleblock strong{ display:block; margin-top:4px; font-family:var(--body); text-transform:none; letter-spacing:0; color:var(--fg); font-weight:500; font-size:.95rem; }
+.eyebrow{ display:flex; align-items:center; gap:10px; }
+.eyebrow::before{ content:""; width:26px; height:1px; background:var(--muted); }
+
+.monitor{ justify-self:center; width:min(100%,330px); }
+.screen{ position:relative; aspect-ratio:9/16; border:1px solid var(--line2); border-radius:6px; overflow:hidden; background:#000; box-shadow:0 0 0 6px var(--panel), 0 0 0 7px var(--line), 0 30px 80px -30px rgba(0,0,0,.6); }
+.screen video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.screen .hud{ position:absolute; inset:0; pointer-events:none; font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; color:#E7EFED; }
+.screen .hud span{ position:absolute; text-shadow:0 1px 3px rgba(0,0,0,.85); }
+.hud .tl{ top:12px; left:14px; display:flex; align-items:center; gap:7px; }
+.hud .tl i{ width:8px; height:8px; border-radius:50%; background:var(--red); animation:blink 1.4s steps(2,jump-none) infinite; }
+.hud .tr{ top:12px; right:14px; }
+.hud .bl{ bottom:14px; left:14px; }
+.hud .br{ bottom:14px; right:14px; }
+.hud .c{ position:absolute; width:18px; height:18px; border:1.5px solid rgba(231,239,237,.75); }
+.hud .c1{ top:34px; left:12px; border-right:0; border-bottom:0; } .hud .c2{ top:34px; right:12px; border-left:0; border-bottom:0; }
+.hud .c3{ bottom:34px; left:12px; border-right:0; border-top:0; } .hud .c4{ bottom:34px; right:12px; border-left:0; border-top:0; }
+.hud .scan{ position:absolute; left:0; right:0; height:70px; top:-70px; background:linear-gradient(transparent, rgba(70,214,184,.10), transparent); animation:scan 6s linear infinite; }
+.monitor figcaption{ margin-top:18px; text-align:center; }
+@keyframes blink{ 50%{ opacity:.2; } }
+@keyframes scan{ to{ transform:translateY(calc(100% * 0 + 640px)); } }
+@media (max-width:880px){ .hero .wrap{ grid-template-columns:1fr; gap:40px; padding-block:44px 52px; } }
+@media (max-width:520px){ .chips{ grid-template-columns:1fr; } .chips div + div{ padding-left:0; border-left:0; border-top:1px solid var(--line); } }
+
+/* ---------- sections ---------- */
+section.s{ padding-block:84px; border-bottom:1px solid var(--line); }
+section.s.blue{ background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/32px 32px, linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/32px 32px; }
+.s h2{ font-size:clamp(1.9rem,4vw,3rem); letter-spacing:-.025em; line-height:1.05; margin-top:12px; }
+.s .lede{ margin-top:16px; max-width:58ch; color:var(--muted); font-size:1.08rem; }
+.split{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:48px; margin-top:44px; align-items:start; }
+@media (max-width:860px){ .split{ grid-template-columns:1fr; gap:32px; } section.s{ padding-block:60px; } }
+h3.h{ font-size:1.15rem; font-weight:600; letter-spacing:-.01em; }
+.sub-h{ margin:34px 0 12px; }
+.ticks li{ position:relative; padding:9px 0 9px 22px; border-bottom:1px solid var(--line); }
+.ticks li::before{ content:""; position:absolute; left:2px; top:1.2em; width:9px; height:1px; background:var(--accent); box-shadow:0 0 0 0 var(--accent); }
+.ticks li strong{ font-weight:600; }
+
+figure{ margin:0; }
+.photo{ border:1px solid var(--line2); border-radius:4px; overflow:hidden; background:var(--panel); }
+.photo img{ display:block; width:100%; height:auto; }
+figcaption{ margin-top:8px; }
+
+/* ---------- course track ---------- */
+.track{ margin-top:48px; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:0; counter-reset:st; position:relative; }
+.track::before{ content:""; position:absolute; left:0; right:0; top:19px; height:1px; background:var(--line2); }
+.stage{ position:relative; padding:0 14px 0 0; }
+.stage .dot{ position:relative; z-index:1; width:38px; height:38px; display:grid; place-items:center; border:1px solid var(--line2); border-radius:50%; background:var(--bg); font-family:var(--mono); font-size:.8rem; color:var(--muted); transition:.2s; }
+.stage:hover .dot,.stage:focus-within .dot{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+.stage h3{ margin-top:16px; font-size:1rem; font-weight:600; line-height:1.25; }
+.stage p{ margin-top:8px; font-size:.9rem; color:var(--muted); line-height:1.5; }
+@media (max-width:980px){ .track{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px 24px; } .track::before{ display:none; } }
+@media (max-width:520px){ .track{ grid-template-columns:1fr; } }
+
+/* ---------- drawing sheet ---------- */
+.sheet{ margin-top:48px; border:1px solid var(--line2); background:var(--panel); border-radius:4px; overflow:hidden; }
+.titleblock{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-bottom:1px solid var(--line2); }
+.titleblock div{ padding:12px 16px; border-right:1px solid var(--line); }
+.titleblock div:last-child{ border-right:0; }
+.titleblock strong{ display:block; margin-top:3px; font-weight:500; font-size:.95rem; font-variant-numeric:tabular-nums; }
+@media (max-width:760px){ .titleblock{ grid-template-columns:repeat(2,minmax(0,1fr)); } .titleblock div:nth-child(2){ border-right:0; } .titleblock div:nth-child(-n+2){ border-bottom:1px solid var(--line); } }
+.sheet button.zoom{ display:block; width:100%; padding:18px; background:var(--panel2); border:0; cursor:zoom-in; }
+.sheet button.zoom img{ display:block; width:100%; max-width:760px; margin:0 auto; background:var(--sheet); border-radius:2px; box-shadow:0 10px 40px -18px rgba(0,0,0,.6); }
+.sheet figcaption{ padding:12px 16px 14px; margin:0; border-top:1px solid var(--line); }
+dialog.lb{ border:0; padding:0; background:transparent; max-width:96vw; max-height:96vh; }
+dialog.lb::backdrop{ background:rgba(0,0,0,.82); }
+dialog.lb img{ display:block; max-width:96vw; max-height:92vh; background:#fff; border-radius:4px; }
+dialog.lb button{ position:absolute; top:8px; right:8px; font-family:var(--mono); font-size:.75rem; letter-spacing:.1em; padding:8px 12px; border-radius:3px; border:1px solid var(--line2); background:var(--panel); color:var(--fg); cursor:pointer; }
+
+/* ---------- failure lab ---------- */
+.lab{ margin-top:44px; display:grid; grid-template-columns:minmax(0,1fr); gap:20px; }
+.panel{ border:1px solid var(--line2); background:var(--panel); border-radius:4px; }
+.panel > header{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--line); }
+.panel .body{ padding:16px; }
+.seg{ display:inline-flex; border:1px solid var(--line2); border-radius:4px; overflow:hidden; }
+.seg button{ font-family:var(--mono); font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; padding:8px 14px; background:transparent; color:var(--muted); border:0; cursor:pointer; }
+.seg button + button{ border-left:1px solid var(--line2); }
+.seg button[aria-pressed="true"]{ background:var(--accent); color:var(--accent-ink); }
+.seg button[data-mat="pla"][aria-pressed="true"]{ background:var(--amber); color:#1d1300; }
+.tilt-wrap{ display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:24px; align-items:center; }
+@media (max-width:860px){ .tilt-wrap{ grid-template-columns:1fr; } }
+.tilt-wrap .note{ font-size:.95rem; color:var(--muted); }
+.tilt-wrap .note strong{ color:var(--fg); font-weight:600; }
+.tilt-wrap .state{ margin-bottom:10px; display:flex; gap:8px; align-items:center; font-family:var(--mono); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; }
+.state i{ width:9px; height:9px; border-radius:50%; background:var(--accent); }
+.state.warn i{ background:var(--amber); }
+
+svg text{ font-family:var(--mono); }
+.t-muted{ fill:var(--muted); } .t-fg{ fill:var(--fg); } .t-amber{ fill:var(--amber); } .t-accent{ fill:var(--accent); } .t-red{ fill:var(--red); }
+.gline{ stroke:var(--line); stroke-width:1; } .axis{ stroke:var(--fg); stroke-width:1.2; }
+.ground{ stroke:var(--fg); stroke-width:1.4; } .hatch{ stroke:var(--muted); stroke-width:1; opacity:.6; }
+
+.ss{ display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:24px; align-items:start; }
+@media (max-width:860px){ .ss{ grid-template-columns:1fr; } }
+.range{ display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+.range label{ white-space:nowrap; }
+input[type=range]{ flex:1; min-width:0; accent-color:var(--accent); height:28px; }
+.readouts{ display:grid; gap:12px; }
+.ro{ border:1px solid var(--line); border-radius:4px; padding:12px 14px; background:var(--bg); }
+.ro h4{ margin:0 0 8px; font-family:var(--mono); font-weight:500; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; display:flex; justify-content:space-between; gap:8px; }
+.ro.pla h4{ color:var(--amber); } .ro.petg h4{ color:var(--accent); }
+.ro dl{ margin:0; display:grid; grid-template-columns:auto 1fr; gap:3px 14px; font-size:.9rem; }
+.ro dt{ color:var(--muted); } .ro dd{ margin:0; font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums; }
+.ro .st{ font-family:var(--mono); font-size:.7rem; padding:2px 8px; border-radius:3px; letter-spacing:.06em; }
+.ro.pla .st{ background:var(--amber-soft); color:var(--amber); } .ro.petg .st{ background:var(--accent-soft); color:var(--accent); }
+
+.terms{ margin-top:36px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+@media (max-width:980px){ .terms{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px){ .terms{ grid-template-columns:1fr; } }
+.term{ border:1px solid var(--line); border-radius:4px; padding:16px 18px; background:var(--panel); }
+.term h3{ font-family:var(--mono); font-weight:500; font-size:.76rem; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.term p{ font-size:.93rem; line-height:1.55; color:var(--fg); }
+.term.root{ background:var(--accent-soft); border-color:var(--accent); }
+.tablewrap{ overflow-x:auto; margin-top:30px; border:1px solid var(--line2); border-radius:4px; background:var(--panel); }
+table{ width:100%; border-collapse:collapse; font-size:.93rem; min-width:620px; }
+th{ text-align:left; font-family:var(--mono); font-weight:500; font-size:.72rem; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); padding:12px 16px; border-bottom:1px solid var(--line2); background:var(--panel2); }
+td{ padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top; }
+tr:last-child td{ border-bottom:0; }
+td:first-child{ font-weight:600; }
+td.n{ font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.src{ margin-top:12px; font-size:.82rem; color:var(--muted); max-width:90ch; }
+.callout{ margin-top:30px; padding:18px 20px; border:1px solid var(--accent); background:var(--accent-soft); border-radius:4px; max-width:75ch; }
+.callout.amber{ border-color:var(--amber); background:var(--amber-soft); }
+.callout strong{ font-weight:600; }
+
+/* ---------- electronics ---------- */
+.diagram{ margin-top:44px; padding:18px 12px; overflow-x:auto; }
+.diagram svg{ min-width:640px; width:100%; display:block; }
+.flow{ stroke-dasharray:5 5; animation:dash 1.1s linear infinite; }
+@keyframes dash{ to{ stroke-dashoffset:-20; } }
+.box{ fill:var(--panel2); stroke:var(--fg); stroke-width:1.2; }
+.box.sig{ fill:var(--accent-soft); stroke:var(--accent); }
+.parts{ margin-top:34px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+@media (max-width:980px){ .parts{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px){ .parts{ grid-template-columns:1fr; } }
+.part{ border:1px solid var(--line); border-radius:4px; padding:16px 18px; background:var(--panel); }
+.part h3{ font-size:1rem; font-weight:600; }
+.part .label{ display:block; margin-bottom:8px; }
+.part p{ margin-top:6px; font-size:.92rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- software ---------- */
+.tabs{ display:flex; flex-wrap:wrap; gap:8px; margin-top:44px; }
+.tabs button{ font-family:var(--mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; padding:10px 14px; border:1px solid var(--line2); background:var(--panel); color:var(--muted); border-radius:4px; cursor:pointer; }
+.tabs button[aria-selected="true"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.vpanel{ margin-top:14px; display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:30px; padding:22px; border:1px solid var(--line2); border-radius:4px; background:var(--panel); }
+@media (max-width:760px){ .vpanel{ grid-template-columns:1fr; gap:16px; } }
+.vpanel h3{ font-size:1.5rem; letter-spacing:-.02em; margin-top:6px; }
+.vpanel .vals{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.vals span{ font-family:var(--mono); font-size:.78rem; padding:4px 9px; border-radius:3px; background:var(--accent-soft); color:var(--accent); font-variant-numeric:tabular-nums; }
+.runner{ margin-top:34px; }
+.runner .panel > header .cap{ font-family:var(--mono); font-size:.76rem; color:var(--muted); letter-spacing:.06em; min-height:1.3em; }
+.btn{ font-family:var(--mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; padding:9px 16px; border:0; border-radius:4px; background:var(--accent); color:var(--accent-ink); cursor:pointer; }
+.fc{ overflow-x:auto; padding:14px 8px; }
+.fc svg{ min-width:700px; width:100%; display:block; }
+.fc .nb{ fill:var(--panel2); stroke:var(--fg); stroke-width:1.2; transition:fill .2s, stroke .2s; }
+.fc .nd{ fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.2; transition:fill .2s; }
+.fc .nt{ fill:var(--fg); stroke:var(--fg); stroke-width:1.2; }
+.fc .tt{ fill:var(--bg); }
+.fc g.on .nb, .fc g.on .nd{ fill:var(--accent); stroke:var(--accent); }
+.fc g.on text{ fill:var(--accent-ink); }
+.fc .ed{ stroke:var(--fg); stroke-width:1.2; fill:none; }
+.fc text{ font-size:9.5px; fill:var(--fg); text-anchor:middle; }
+.fc .yn{ fill:var(--accent); font-size:9px; }
+.fc .cp{ fill:var(--muted); font-size:8.5px; text-anchor:start; }
+
+/* ---------- results ---------- */
+.frames{ margin-top:40px; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; }
+@media (max-width:860px){ .frames{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+.frames figure img{ display:block; width:100%; aspect-ratio:9/14; object-fit:cover; border:1px solid var(--line2); border-radius:3px; }
+.frames figcaption b{ display:block; color:var(--fg); font-weight:500; }
+.three{ margin-top:44px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px; }
+@media (max-width:760px){ .three{ grid-template-columns:1fr; gap:24px; } }
+footer.end{ padding-block:60px 90px; }
+footer.end p{ max-width:60ch; }
+footer.end .sig{ margin-top:28px; }
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .hud .scan,.hud .tl i,.flow{ animation:none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-bar">
+  <div class="wrap">
+    <a class="brand" href="../index.html">KRRISH SHAH /// <b>ROVER</b></a>
+    <nav class="site-nav" aria-label="Site"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../degree.html">Degree</a><a href="../portfolio.html" aria-current="page">Portfolio</a><a href="../fun.html">Fun</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+</header>
+<main id="main">
+
+
+<header class="bar sec-bar">
+  <div class="wrap">
+    <div class="who"><span>SECTIONS</span></div>
+    <nav aria-label="Sections" id="nav">
+      <a href="#brief">Brief</a><a href="#mechanical">Mechanical</a><a href="#failure">Failure</a><a href="#electronics">Electronics</a><a href="#software">Software</a><a href="#results">Results</a>
+    </nav>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="secprog"></i></div>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="label eyebrow">Personal project · Mechanical, electronics and controls</div>
+      <h1>Autonomous <em>Obstacle-Course</em> Rover</h1>
+      <p class="sub">A four-wheel rover I designed in CAD, 3D printed, wired and programmed, then ran through a six-stage course on timed moves, a sonar sensor and a light sensor.</p>
+      <div class="chips">
+        <div class="label">Role<strong>Solo: design, build, code</strong></div>
+        <div class="label">Built with<strong>CAD, 3D printing, Phidgets, Java</strong></div>
+        <div class="label">Result<strong>All 6 stages cleared</strong></div>
+      </div>
+      <div class="btn-row"><a class="btn" href="rover/assets/Rover_Portfolio_Krrish_Shah.pdf" target="_blank" rel="noopener">Download the PDF</a></div>
+    </div>
+    <figure class="monitor">
+      <div class="screen">
+        <video id="run" src="rover/assets/rover_run.mp4" poster="rover/assets/poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Top-down recording of the rover completing the obstacle course"></video>
+        <div class="hud" aria-hidden="true">
+          <div class="scan"></div>
+          <span class="tl"><i></i>REC</span><span class="tr" id="tc">00:00 / 00:51</span>
+          <span class="bl">TOP-DOWN</span><span class="br">RUN 01</span>
+          <b class="c c1"></b><b class="c c2"></b><b class="c c3"></b><b class="c c4"></b>
+        </div>
+      </div>
+      <figcaption class="label">Demo run · the real course, start to finish</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- ================= BRIEF ================= -->
+<section class="s" id="brief">
+  <div class="wrap">
+    <div class="label">The brief</div>
+    <h2>Navigate a course with nothing but sensors and code</h2>
+    <p class="lede">The assignment, <em>Maze Navigator &amp; Environment Logger</em>, asked for a rover that finds its way on its own, uses sonar to avoid obstacles and a light sensor to read its environment, and records readings so the run can be analysed afterwards.</p>
+
+    <div class="track" role="list">
+      <div class="stage" role="listitem"><div class="dot">1</div><h3>Hard-coded turns</h3><p>Follows a timed sequence of drive and turn moves.</p></div>
+      <div class="stage" role="listitem"><div class="dot">2</div><h3>Sonar obstacle detection</h3><p>Stops when something is closer than 200 mm and turns.</p></div>
+      <div class="stage" role="listitem"><div class="dot">3</div><h3>Speed recognition</h3><p>Drives at a different speed for each part of the run.</p></div>
+      <div class="stage" role="listitem"><div class="dot">4</div><h3>Light sensing</h3><p>Creeps toward the lamp and stops when the light level is high enough.</p></div>
+      <div class="stage" role="listitem"><div class="dot">5</div><h3>Precision turning</h3><p>Turns calibrated by trial and error to land on the right heading.</p></div>
+      <div class="stage" role="listitem"><div class="dot">6</div><h3>Textbook push</h3><p>Pushes a textbook clear of the finish line.</p></div>
+    </div>
+
+    <div class="split" style="margin-top:56px">
+      <figure><div class="photo"><img src="rover/assets/rover.jpg" alt="The assembled rover with motor controller, wireless hub and battery pack" width="1100" height="694"></div><figcaption class="label">The machine · motor controller, wireless hub, battery pack, four driven wheels</figcaption></figure>
+      <figure><div class="photo"><img src="rover/assets/course.jpg" alt="Top-down view of the course made from textbooks standing on edge" width="900" height="506" loading="lazy"></div><figcaption class="label">The course from above · textbooks stand on edge to form the walls</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MECHANICAL ================= -->
+<section class="s blue" id="mechanical">
+  <div class="wrap">
+    <div class="label">Mechanical design</div>
+    <h2>Drawn in CAD, printed flat, folded along designed bend lines</h2>
+    <p class="lede">Everything the rover rides on was drawn in CAD, then made and finished by hand.</p>
+
+    <div class="split">
+      <div>
+        <h3 class="h">What I designed</h3>
+        <ul class="ticks" style="margin-top:12px">
+          <li><strong>Main frame:</strong> the structure everything else attaches to, printed flat and folded along designed bend lines, with bays for the motors underneath.</li>
+          <li><strong>Battery and motor frame:</strong> holds the batteries and motors in place.</li>
+          <li><strong>Suspension:</strong> keeps the wheels in contact with the ground on uneven floor.</li>
+          <li><strong>Sensor mounts:</strong> position the sonar and light sensor for a clear field of view and clearance.</li>
+          <li><strong>Wireless-module mount:</strong> carries the piece that connects the rover to my computer's network.</li>
+        </ul>
+      </div>
+      <div class="prose">
+        <h3 class="h">Designing for bending</h3>
+        <p style="margin-top:12px">The frame is printed flat and folds along bend lines I added in CAD. I predicted where the weight of the batteries, motors and wheels would bend it and put the bend lines there. Once the rover was loaded, the parts bent at those lines.</p>
+        <h3 class="h sub-h">From CAD to hardware</h3>
+        <p>First printed in PLA; that frame bent too easily under load, so the final build uses PETG. None of the 15+ printed parts was usable straight off the printer: I cut, shaped and sanded each one before assembly.</p>
+      </div>
+    </div>
+
+    <figure class="sheet">
+      <div class="titleblock label">
+        <div>Material<strong>PETG (first in PLA)</strong></div>
+        <div>Printed flat<strong>168.4 × 202.4 mm</strong></div>
+        <div>Folded size<strong>150 × 120 mm</strong></div>
+        <div>Mass<strong>62 g</strong></div>
+      </div>
+      <button class="zoom" id="zoom" type="button" aria-label="Enlarge the CAD drawing"><img src="rover/assets/cad.png" alt="CAD of the main frame: isometric views from above and underneath, the flat printed blank with bend lines, and the folded top view with dimensions" width="1760" height="1320" loading="lazy"></button>
+      <figcaption class="label">Main frame · top: from above and underneath (motor bays) · bottom left: flat printed blank, bend lines in red (mm) · bottom right: folded top view · click to enlarge</figcaption>
+    </figure>
+    <dialog class="lb" id="lb"><img src="rover/assets/cad.png" alt="Enlarged CAD drawing of the main frame"><button type="button" id="lbx">CLOSE</button></dialog>
+  </div>
+</section>
+
+<!-- ================= FAILURE ================= -->
+<section class="s" id="failure">
+  <div class="wrap">
+    <div class="label">Design failure and fix</div>
+    <h2>The PLA frame bent under load and tilted the whole rover</h2>
+    <p class="lede">The first frame was printed in PLA. With the batteries, motors and wheels fitted, it bent so easily that the rover tilted off balance. My teacher recommended PETG, and the reprinted frame bent less under the same load.</p>
+
+    <div class="split">
+      <ul class="ticks">
+        <li><strong>Symptom:</strong> under the full load, the PLA frame bent and tilted the rover, shifting the balance of every component mounted on it.</li>
+        <li><strong>Why it matters:</strong> a tilted frame changes how the wheels meet the ground and where anything mounted on it points, which undermines timed moves and sensor readings.</li>
+        <li><strong>Evidence:</strong> I did not photograph the failure, so the model below is a schematic of it, exaggerated for clarity and not measured.</li>
+      </ul>
+      <div class="callout amber" style="margin-top:0"><strong>Root cause.</strong> A constant bending load on thin, low-ductility bend zones caused local yielding and creep. The permanent set left the frame sagging, and the rover tilted.</div>
+    </div>
+
+    <div class="lab">
+      <div class="panel">
+        <header><span class="label">Schematic · front view of the rover</span>
+          <div class="seg" role="group" aria-label="Frame state">
+            <button type="button" data-state="level" aria-pressed="true">Level</button>
+            <button type="button" data-state="pla" data-mat="pla" aria-pressed="false">PLA loaded</button>
+            <button type="button" data-state="petg" aria-pressed="false">PETG loaded</button>
+          </div>
+        </header>
+        <div class="body tilt-wrap">
+          <svg id="tilt" viewBox="0 0 520 300" role="img" aria-label="Schematic of the rover frame, level or sagging and tilted"></svg>
+          <div>
+            <div class="state" id="tstate"><i></i><span id="ttext">As designed: level</span></div>
+            <p class="note" id="tnote">The frame sits flat and the weight of the battery, motors and wheels is shared. Choose <strong>PLA loaded</strong> to see what happened.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header><span class="label">Stress–strain explorer · printed PLA vs printed PETG</span></header>
+        <div class="body">
+          <div class="range"><label class="label" for="eps">Strain ε</label><input id="eps" type="range" min="0" max="8" step="0.05" value="2.9"><span class="mono" id="epsv" style="min-width:4.2ch;text-align:right">2.9 %</span></div>
+          <div class="ss">
+            <svg id="ssplot" viewBox="0 0 560 330" role="img" aria-label="Stress–strain curves for printed PLA and PETG with a movable strain marker"></svg>
+            <div class="readouts">
+              <div class="ro pla"><h4><span>PLA</span><span class="st" id="plast"></span></h4><dl><dt>Stress σ</dt><dd id="plas"></dd><dt>Energy absorbed</dt><dd id="plae"></dd></dl></div>
+              <div class="ro petg"><h4><span>PETG</span><span class="st" id="petgst"></span></h4><dl><dt>Stress σ</dt><dd id="petgs"></dd><dt>Energy absorbed</dt><dd id="petge"></dd></dl></div>
+              <p class="src" style="margin:0">Drag the slider. PLA yields at 2.9% strain, PETG at 5.9%. The area under each curve is the energy absorbed per unit volume. Curve shapes are sketched between datasheet points.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terms">
+      <div class="term"><h3>Stress</h3><p>Stress (σ) is load per unit area. In bending, σ = M·c / I. The weight of the batteries, motors and wheels created a bending moment that concentrated stress in the thin bend zones.</p></div>
+      <div class="term"><h3>Strain</h3><p>Strain (ε) is deformation per unit length. In the elastic range σ = E·ε and the part springs back. Past the elastic limit the strain no longer recovers.</p></div>
+      <div class="term"><h3>Young's modulus</h3><p>Young's modulus (E) is stiffness in the elastic range. Beam stiffness scales with E·I, and I = b·t³ / 12, so thin sections are extremely sensitive to thickness.</p></div>
+      <div class="term"><h3>Yield and ductility</h3><p>Yield strength marks where permanent (plastic) deformation starts. Ductility is the strain a material tolerates. Printed PLA yields at only about 3% strain.</p></div>
+      <div class="term"><h3>Creep</h3><p>Slow permanent deformation under constant load. PLA softens at about 55 to 60&nbsp;°C (its glass transition), so warm batteries and motors can speed it up.</p></div>
+      <div class="term root"><h3>Why PETG</h3><p>Printed PETG is not stiffer than PLA. The gain is in how it behaves once the bend zones are loaded: about twice the strain at yield, more energy absorbed before failure, and a higher glass transition.</p></div>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Property</th><th>PLA</th><th>PETG</th><th>What it means for the frame</th></tr></thead>
+        <tbody>
+          <tr><td>Young's modulus, E</td><td class="n">2.2 GPa</td><td class="n">1.9 GPa</td><td>Elastic stiffness. PLA is slightly stiffer.</td></tr>
+          <tr><td>Tensile yield strength, σy</td><td class="n">51 MPa</td><td class="n">46 MPa</td><td>Similar strength, so not the deciding factor.</td></tr>
+          <tr><td>Strain at yield</td><td class="n">2.9%</td><td class="n">5.9%</td><td>How far it bends before it deforms permanently.</td></tr>
+          <tr><td>Glass transition, Tg</td><td class="n">about 55–60&nbsp;°C</td><td class="n">about 77&nbsp;°C</td><td>Creep resistance near warm batteries and motors.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Typical datasheet values for printed specimens in the flat (XY) direction: <a href="https://cdn.shopify.com/s/files/1/1745/6181/files/PRUSA_PLA_TechSheet_ENG.pdf" target="_blank" rel="noopener">Prusament PLA</a> (ISO 527) and <a href="https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf" target="_blank" rel="noopener">Ultimaker PETG</a> (ASTM D3039). Test methods and printers differ, so compare the trends, not the decimals. The PLA sheet reports yield only, so its curve stops there.</p>
+
+    <div class="split">
+      <div>
+        <h3 class="h">Result</h3>
+        <ul class="ticks" style="margin-top:12px">
+          <li>Same geometry and bend lines, reprinted in PETG.</li>
+          <li>Under the same load of batteries, motors and wheels, the PETG frame bent noticeably less and the rover's balance held.</li>
+          <li>Final frame mass: <strong>62 g</strong>.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="h">If it needed more</h3>
+        <ul class="ticks" style="margin-top:12px">
+          <li><strong>Thicker bend zones:</strong> stiffness scales with t³, so 50% more thickness gives about 3.4× the bending stiffness.</li>
+          <li><strong>Print orientation:</strong> PETG's layer-to-layer strength is about half its in-plane strength (19 against 38.5 MPa at break), so keep bends from peeling layers apart.</li>
+          <li><strong>Check first:</strong> estimate deflection with δ = F·L³ / (3·E·I) before printing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ELECTRONICS ================= -->
+<section class="s blue" id="electronics">
+  <div class="wrap">
+    <div class="label">Electronics and sensors</div>
+    <h2>A wireless hub ties the rover to my computer</h2>
+    <p class="lede">The code runs on the computer and sends every command to the rover over the network. The sensors send their readings back the same way.</p>
+
+    <div class="panel diagram">
+      <svg viewBox="0 0 740 270" role="img" aria-label="System layout: computer, wireless hub, motor controller with drive motors, sonar sensor and light sensor" font-size="11" text-anchor="middle">
+        <defs><marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker></defs>
+        <g class="box"><rect x="14" y="104" width="130" height="64" rx="3" class="box"/><rect x="205" y="104" width="130" height="64" rx="3" class="box sig"/><rect x="400" y="30" width="150" height="56" rx="3" class="box"/><rect x="400" y="108" width="150" height="56" rx="3" class="box"/><rect x="400" y="186" width="150" height="56" rx="3" class="box"/><rect x="610" y="30" width="116" height="56" rx="3" class="box"/><rect x="610" y="108" width="116" height="56" rx="3" class="box sig"/><rect x="610" y="186" width="116" height="56" rx="3" class="box sig"/></g>
+        <g class="t-fg">
+          <text x="79" y="132">Computer</text><text x="79" y="148" class="t-muted">Java control code</text>
+          <text x="270" y="132">Wireless hub</text><text x="270" y="148" class="t-muted">192.168.100.1</text>
+          <text x="475" y="55">DC motor controller</text><text x="475" y="71" class="t-muted">ch 0 left · ch 1 right</text>
+          <text x="475" y="133">Sonar sensor</text><text x="475" y="149" class="t-muted">distance, channel 0</text>
+          <text x="475" y="211">Light sensor</text><text x="475" y="227" class="t-muted">hub port 3</text>
+          <text x="668" y="55">Drive motors</text><text x="668" y="71" class="t-muted">4 wheels</text>
+          <text x="668" y="133" class="t-accent">200 mm trigger</text>
+          <text x="668" y="211" class="t-accent">100 lux target</text>
+        </g>
+        <g fill="none" stroke-width="1.5" style="stroke:var(--accent)" marker-end="url(#arw)">
+          <path class="flow" d="M144 136H203"/><path class="flow" d="M335 126H370V58H398"/><path class="flow" d="M335 136H398V136"/><path class="flow" d="M335 146H370V214H398"/>
+          <path class="flow" d="M550 58H608"/><path class="flow" d="M550 136H608"/><path class="flow" d="M550 214H608"/>
+        </g>
+        <text x="174" y="126" class="t-muted" font-size="9.5">wireless</text>
+      </svg>
+    </div>
+
+    <div class="parts">
+      <div class="part"><span class="label">Drive</span><h3>Phidgets DC motor controller</h3><p>Left side on channel 0, right side on channel 1.</p></div>
+      <div class="part"><span class="label">Locomotion</span><h3>Four motors and wheels</h3><p>Wired as a left pair and a right pair, so the rover turns by driving the two sides in opposite directions.</p></div>
+      <div class="part"><span class="label">Sensing</span><h3>Sonar distance sensor</h3><p>Reads distance in millimetres and sees obstacles ahead.</p></div>
+      <div class="part"><span class="label">Sensing</span><h3>Light sensor</h3><p>Reads light level in lux on hub port 3 and finds the lamp.</p></div>
+      <div class="part"><span class="label">Network</span><h3>Wireless Phidgets hub</h3><p>Connects every device to my computer's network.</p></div>
+      <div class="part"><span class="label">Power</span><h3>Batteries</h3><p>Mounted in the printed battery frame. Wiring between sensors, hub and controller is soldered.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOFTWARE ================= -->
+<section class="s" id="software">
+  <div class="wrap">
+    <div class="label">Software and iteration</div>
+    <h2>Four versions, each building on the last</h2>
+    <p class="lede">The control code is written in Java with the Phidget22 library. I started with a square driven by pure timing and added sensing one step at a time.</p>
+
+    <div class="tabs" role="tablist" aria-label="Code versions" id="vtabs"></div>
+    <div class="vpanel" id="vpanel" role="tabpanel" aria-live="polite"></div>
+
+    <div class="runner">
+      <div class="panel">
+        <header>
+          <span class="label">Control flow · replay</span>
+          <span class="cap" id="cap">Press run to replay a condensed trace of the logic.</span>
+          <button class="btn" id="run-btn" type="button">▶ Run</button>
+        </header>
+        <div class="fc"><svg id="fc" viewBox="0 0 740 330" role="img" aria-label="Flowchart of the rover control logic: timed moves, sonar loop, light loop"></svg></div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>Limits.</strong> Turns are calibrated durations, not measured angles, so battery level and floor friction can change them. The sonar decides <em>when</em> to turn, while the turn directions are set in advance. Next step: add a gyro or wheel encoders so turns use real heading feedback.</div>
+  </div>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section class="s blue" id="results">
+  <div class="wrap">
+    <div class="label">Results and reflection</div>
+    <h2>All six stages cleared, finishing with the textbook</h2>
+    <p class="lede">The rover cleared all six stages on the demo run, finishing by pushing the textbook clear of the line.</p>
+
+    <div class="frames">
+      <figure><img src="rover/assets/frame_00.jpg" alt="Start of the run" loading="lazy"><figcaption class="label"><b>0:00</b>Start</figcaption></figure>
+      <figure><img src="rover/assets/frame_10.jpg" alt="Rover entering the course" loading="lazy"><figcaption class="label"><b>0:10</b>Into the course</figcaption></figure>
+      <figure><img src="rover/assets/frame_20.jpg" alt="Rover between the walls" loading="lazy"><figcaption class="label"><b>0:20</b>Between walls</figcaption></figure>
+      <figure><img src="rover/assets/frame_30.jpg" alt="Rover turning through the course" loading="lazy"><figcaption class="label"><b>0:30</b>Turning through</figcaption></figure>
+      <figure><img src="rover/assets/frame_40.jpg" alt="Lamp in view near the end" loading="lazy"><figcaption class="label"><b>0:40</b>Lamp in view</figcaption></figure>
+      <figure><img src="rover/assets/frame_47.jpg" alt="Finish" loading="lazy"><figcaption class="label"><b>0:47</b>Finish</figcaption></figure>
+    </div>
+
+    <div class="three">
+      <div>
+        <h3 class="h">What worked</h3>
+        <ul class="ticks" style="margin-top:12px">
+          <li>Building in layers: every version was a working rover before the next sensor went on.</li>
+          <li>Calibrating turns by hand until the rover hit each corner.</li>
+          <li>Smoothing the light signal so the stop point was consistent.</li>
+          <li>Designing the mounts around the sensors, not the other way round.</li>
+          <li>Putting bend lines where I predicted the frame would flex under the weight of the batteries, motors and wheels. It bent at those lines.</li>
+          <li>Treating the tilting PLA frame as a materials problem and fixing it by moving to PETG.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="h">What I'd change</h3>
+        <ul class="ticks" style="margin-top:12px">
+          <li>Replace timed turns with gyro or encoder feedback.</li>
+          <li>Let the sonar choose the turn direction, not just the moment.</li>
+          <li>Log every sensor reading and analyse the run afterwards, as the brief asks. The current code only prints readings to the screen.</li>
+        </ul>
+        <div class="callout" style="margin-top:28px"><strong>What I took away.</strong> Hardware and software limit each other, and material properties decide whether a design works, not just its shape. Every mechanical choice, from how the frame flexes under load to where the sensors sit, changed what the code could rely on, and every sensor reading was noisier than I expected until I filtered it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+(function(){
+  var $ = function(s,r){ return (r||document).querySelector(s); };
+  var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS = 'http://www.w3.org/2000/svg';
+
+  /* ---------- section readout + progress ---------- */
+  var links = $$('#nav a'), ids = links.map(function(a){ return a.getAttribute('href').slice(1); });
+  function onScroll(){
+    var h = document.documentElement, max = h.scrollHeight - innerHeight;
+    $('#secprog').style.width = (max > 0 ? Math.min(100, scrollY / max * 100) : 0) + '%';
+    var cur = null, y = scrollY + 140;
+    ids.forEach(function(id){ var el = document.getElementById(id); if (el && el.offsetTop <= y) cur = id; });
+    links.forEach(function(a){ a.setAttribute('aria-current', a.getAttribute('href') === '#' + cur ? 'true' : 'false'); });
+  }
+  addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', onScroll); onScroll();
+
+  /* ---------- video HUD ---------- */
+  var vid = $('#run'), tc = $('#tc');
+  function mmss(t){ t = Math.max(0, t|0); return ('0'+(t/60|0)).slice(-2) + ':' + ('0'+(t%60)).slice(-2); }
+  if (vid){
+    if (reduce){ vid.removeAttribute('autoplay'); vid.pause(); vid.setAttribute('controls',''); }
+    vid.addEventListener('timeupdate', function(){ tc.textContent = mmss(vid.currentTime) + ' / ' + mmss(vid.duration || 51); });
+    vid.addEventListener('click', function(){ if (vid.paused) vid.play().catch(function(){}); else vid.pause(); });
+  }
+
+  /* ---------- CAD lightbox ---------- */
+  var lb = $('#lb');
+  $('#zoom').addEventListener('click', function(){ if (lb.showModal) lb.showModal(); });
+  $('#lbx').addEventListener('click', function(){ lb.close(); });
+  lb.addEventListener('click', function(e){ if (e.target === lb) lb.close(); });
+
+  /* ---------- tilt schematic ---------- */
+  var tilt = $('#tilt'), GY = 252, PX = 410, PY = 252;
+  tilt.innerHTML =
+    '<line class="ground" x1="10" y1="'+GY+'" x2="510" y2="'+GY+'"/>' +
+    '<g id="hatch"></g>' +
+    '<line id="ref" x1="132" y1="140" x2="388" y2="140" stroke="var(--muted)" stroke-dasharray="3 4" opacity="0"/>' +
+    '<g id="loads" stroke="var(--red)" fill="var(--red)" stroke-width="1.6">' +
+      [190,260,330].map(function(x){ return '<line x1="'+x+'" y1="36" x2="'+x+'" y2="92"/><path d="M'+(x-5)+' 88L'+x+' 98L'+(x+5)+' 88Z" stroke="none"/>'; }).join('') +
+      '<text x="260" y="26" text-anchor="middle" stroke="none" font-size="10">weight of battery, motors, wheels</text></g>' +
+    '<g id="body">' +
+      '<circle cx="110" cy="222" r="30" fill="var(--wheel)" stroke="var(--muted)"/><circle cx="110" cy="222" r="9" fill="var(--bg)"/>' +
+      '<circle cx="410" cy="222" r="30" fill="var(--wheel)" stroke="var(--muted)"/><circle cx="410" cy="222" r="9" fill="var(--bg)"/>' +
+      '<rect x="140" y="140" width="8" height="82" fill="var(--frame)"/><rect x="372" y="140" width="8" height="82" fill="var(--frame)"/>' +
+      '<rect x="148" y="172" width="46" height="36" fill="var(--amber)"/><rect x="326" y="172" width="46" height="36" fill="var(--amber)"/>' +
+      '<path id="plate" d="" fill="var(--frame)"/>' +
+      '<rect id="batt" x="215" y="112" width="90" height="28" fill="var(--accent)"/>' +
+    '</g>' +
+    '<g id="ang" opacity="0"><line id="aline" stroke="var(--red)" stroke-dasharray="4 3" stroke-width="1.2"/><path id="aarc" fill="none" stroke="var(--red)" stroke-width="1.2"/><text id="atxt" class="t-red" font-size="12">θ tilt</text></g>' +
+    '<text id="lift" class="t-muted" font-size="10" text-anchor="middle" opacity="0">left wheel lifts</text>' +
+    '<text x="12" y="290" class="t-muted" font-size="10">Schematic. Exaggerated for clarity, not measured.</text>';
+  var hg = $('#hatch', tilt); for (var x = 14; x < 510; x += 12){ var l = document.createElementNS(NS,'line'); l.setAttribute('class','hatch'); l.setAttribute('x1',x); l.setAttribute('y1',GY); l.setAttribute('x2',x-7); l.setAttribute('y2',GY+8); hg.appendChild(l); }
+  var states = {
+    level:{ sag:0,  tilt:0,   txt:'As designed: level', warn:false, note:'The frame sits flat and the weight of the battery, motors and wheels is shared. Choose <strong>PLA loaded</strong> to see what happened.' },
+    pla:  { sag:22, tilt:9,   txt:'PLA under load: sagging and tilted', warn:true, note:'The thin bend zones yield and creep. The <strong>frame sags</strong>, the whole rover <strong>tilts</strong>, one wheel unloads, and the balance of every mounted part shifts.' },
+    petg: { sag:7,  tilt:2.5, txt:'PETG under load: small sag', warn:false, note:'The same load and the same bend lines. The <strong>PETG frame bends noticeably less</strong>, so the rover stays close to level. The amount shown is illustrative, not measured.' }
+  };
+  var cur = {sag:0,tilt:0}, anim = null;
+  function drawTilt(s,t){
+    var cy = 140 + 2*s;
+    $('#plate').setAttribute('d','M140 140 Q260 '+cy+' 380 140 L380 150 Q260 '+(cy+10)+' 140 150 Z');
+    $('#batt').setAttribute('y', 112 + s);
+    $('#body').setAttribute('transform','rotate('+t.toFixed(2)+' '+PX+' '+PY+')');
+    var th = t*Math.PI/180, ex = PX - 300*Math.cos(th), ey = PY - 300*Math.sin(th), rx = PX - 130*Math.cos(th), ry = PY - 130*Math.sin(th);
+    $('#aline').setAttribute('x1',PX); $('#aline').setAttribute('y1',PY); $('#aline').setAttribute('x2',ex.toFixed(1)); $('#aline').setAttribute('y2',ey.toFixed(1));
+    $('#aarc').setAttribute('d','M'+(PX-130)+' '+PY+' A130 130 0 0 1 '+rx.toFixed(1)+' '+ry.toFixed(1));
+    $('#atxt').setAttribute('x',PX-168); $('#atxt').setAttribute('y',PY-22);
+    $('#ang').setAttribute('opacity', t > 1.5 ? 1 : 0);
+    $('#ref').setAttribute('opacity', s > 2 ? .8 : 0);
+    var lx = PX - 300*Math.cos(th), ly = PY - 300*Math.sin(th);
+    $('#lift').setAttribute('x', 62); $('#lift').setAttribute('y', 276); $('#lift').setAttribute('opacity', t > 4 ? 1 : 0);
+  }
+  function setState(k){
+    var s = states[k], from = {sag:cur.sag, tilt:cur.tilt}, t0 = null;
+    $$('.seg button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.state === k ? 'true' : 'false'); });
+    $('#ttext').textContent = s.txt; $('#tnote').innerHTML = s.note; $('#tstate').classList.toggle('warn', s.warn);
+    if (anim) cancelAnimationFrame(anim);
+    if (reduce){ cur = {sag:s.sag, tilt:s.tilt}; drawTilt(cur.sag, cur.tilt); return; }
+    (function step(ts){
+      if (t0 === null) t0 = ts; var p = Math.min(1, (ts - t0)/700), e = 1 - Math.pow(1-p,3);
+      cur.sag = from.sag + (s.sag - from.sag)*e; cur.tilt = from.tilt + (s.tilt - from.tilt)*e; drawTilt(cur.sag, cur.tilt);
+      if (p < 1) anim = requestAnimationFrame(step);
+    })(performance.now());
+  }
+  $$('.seg button').forEach(function(b){ b.addEventListener('click', function(){ setState(b.dataset.state); }); });
+  drawTilt(0,0);
+
+  /* ---------- stress-strain explorer ---------- */
+  var PLA  = [[0,0],[0.5,11],[1,22],[1.5,32],[2,41],[2.5,47.5],[2.9,51]];
+  var PETG = [[0,0],[0.5,9.5],[1,19],[2,33.5],[3,41],[4,44.5],[5,45.8],[5.9,46],[6.8,43],[7.6,38.5]];
+  var ss = $('#ssplot'), L = 62, R = 540, T = 24, B = 290;
+  function X(e){ return L + (R-L)*e/8; } function Y(s){ return B - (B-T)*s/60; }
+  function sigma(arr,e){ if (e > arr[arr.length-1][0]) return null; for (var i=1;i<arr.length;i++){ if (e <= arr[i][0]){ var a=arr[i-1], b=arr[i]; return a[1] + (b[1]-a[1])*(e-a[0])/(b[0]-a[0]); } } return arr[arr.length-1][1]; }
+  function energy(arr,e){ var tot = 0, prev = arr[0]; for (var i=1;i<arr.length;i++){ var pt = arr[i]; if (e <= prev[0]) break; var hi = Math.min(e, pt[0]), sh = prev[1] + (pt[1]-prev[1])*(hi-prev[0])/(pt[0]-prev[0]); tot += (prev[1]+sh)/2*(hi-prev[0]); if (e <= pt[0]) break; prev = pt; } return tot/100; }
+  var pts = function(arr,e){ var out = []; arr.forEach(function(p){ if (p[0] <= e) out.push(p); }); var s = sigma(arr,e); if (s !== null && (!out.length || out[out.length-1][0] < e)) out.push([e,s]); return out; };
+  var path = function(arr){ return arr.map(function(p,i){ return (i?'L':'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1); }).join(''); };
+  var grid = '';
+  [0,20,40,60].forEach(function(m){ grid += '<line class="gline" x1="'+L+'" x2="'+R+'" y1="'+Y(m)+'" y2="'+Y(m)+'"/><text class="t-muted" x="'+(L-8)+'" y="'+(Y(m)+3)+'" text-anchor="end" font-size="10">'+m+'</text>'; });
+  [0,2,4,6,8].forEach(function(e){ grid += '<line class="gline" y1="'+T+'" y2="'+B+'" x1="'+X(e)+'" x2="'+X(e)+'"/><text class="t-muted" x="'+X(e)+'" y="'+(B+16)+'" text-anchor="middle" font-size="10">'+e+'</text>'; });
+  ss.innerHTML = grid +
+    '<line class="axis" x1="'+L+'" x2="'+R+'" y1="'+B+'" y2="'+B+'"/><line class="axis" x1="'+L+'" x2="'+L+'" y1="'+T+'" y2="'+B+'"/>' +
+    '<text class="t-fg" x="'+((L+R)/2)+'" y="'+(B+36)+'" text-anchor="middle" font-size="11">Strain ε (%)</text>' +
+    '<text class="t-fg" x="16" y="'+((T+B)/2)+'" text-anchor="middle" font-size="11" transform="rotate(-90 16 '+((T+B)/2)+')">Stress σ (MPa)</text>' +
+    '<path id="areaPetg" fill="var(--accent)" opacity=".16"/><path id="areaPla" fill="var(--amber)" opacity=".26"/>' +
+    '<path d="'+path(PETG)+'" fill="none" stroke="var(--accent)" stroke-width="2.2"/>' +
+    '<path d="'+path(PLA)+'" fill="none" stroke="var(--amber)" stroke-width="2.2"/>' +
+    '<circle cx="'+X(2.9)+'" cy="'+Y(51)+'" r="4" fill="var(--bg)" stroke="var(--amber)" stroke-width="2"/>' +
+    '<circle cx="'+X(5.9)+'" cy="'+Y(46)+'" r="4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>' +
+    '<path d="M'+(X(7.6)-4)+' '+(Y(38.5)-4)+'l8 8m0 -8l-8 8" stroke="var(--accent)" stroke-width="2"/>' +
+    '<text class="t-amber" x="'+(X(2.9)-8)+'" y="'+(Y(51)-10)+'" text-anchor="end" font-size="10">PLA yields 2.9%</text>' +
+    '<text class="t-accent" x="'+X(5.9)+'" y="'+(Y(46)-11)+'" text-anchor="middle" font-size="10">PETG yields 5.9%</text>' +
+    '<text class="t-accent" x="'+(X(7.6)+2)+'" y="'+(Y(38.5)+18)+'" text-anchor="end" font-size="10">fracture 7.6%</text>' +
+    '<line id="mk" stroke="var(--fg)" stroke-dasharray="4 4" y1="'+T+'" y2="'+B+'"/>' +
+    '<circle id="dPla" r="5" fill="var(--amber)" stroke="var(--bg)" stroke-width="1.5"/><circle id="dPetg" r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="1.5"/>';
+  function area(arr,e,id){ var p = pts(arr,e); if (p.length < 2){ $(id).setAttribute('d',''); return; } $(id).setAttribute('d', path(p) + 'L'+X(p[p.length-1][0]).toFixed(1)+' '+B+'L'+X(0)+' '+B+'Z'); }
+  var fmt = function(v,u){ return v.toFixed(1) + ' ' + u; };
+  function update(){
+    var e = parseFloat($('#eps').value); $('#epsv').textContent = e.toFixed(1) + ' %';
+    $('#mk').setAttribute('x1', X(e)); $('#mk').setAttribute('x2', X(e));
+    var sp = sigma(PLA,e), sg = sigma(PETG,e);
+    var dp = $('#dPla'), dg = $('#dPetg');
+    if (sp === null){ dp.setAttribute('opacity',0); } else { dp.setAttribute('opacity',1); dp.setAttribute('cx',X(e)); dp.setAttribute('cy',Y(sp)); }
+    if (sg === null){ dg.setAttribute('opacity',0); } else { dg.setAttribute('opacity',1); dg.setAttribute('cx',X(e)); dg.setAttribute('cy',Y(sg)); }
+    area(PLA,e,'#areaPla'); area(PETG,e,'#areaPetg');
+    $('#plas').textContent = sp === null ? 'no data past yield' : fmt(sp,'MPa');
+    $('#plae').textContent = fmt(energy(PLA,Math.min(e,2.9)),'MJ/m³') + (e > 2.9 ? ' at yield' : '');
+    $('#plast').textContent = e < 2.9 ? 'below yield' : (e === 2.9 ? 'at yield' : 'past yield');
+    $('#petgs').textContent = sg === null ? 'fractured' : fmt(sg,'MPa');
+    $('#petge').textContent = fmt(energy(PETG,Math.min(e,7.6)),'MJ/m³');
+    $('#petgst').textContent = e > 7.6 ? 'fractured' : (e < 5.9 ? 'below yield' : 'past yield');
+  }
+  $('#eps').addEventListener('input', update); update();
+
+  /* ---------- version tabs ---------- */
+  var V = [
+    {k:'v1', n:'1 · Square test', add:'First working movement', do:'Forward 3000 ms at 0.5, then a turn at full speed lasting 582, 582, 580 and 578 ms, repeated for four sides.', vals:['3000 ms forward','speed 0.5','turns 582 / 582 / 580 / 578 ms']},
+    {k:'v2', n:'2 · Hard-coded course', add:'Gentler turns, max acceleration', do:'Turns at half speed (545, 550 and 560 ms), with forward runs of 1000, 1100 and 2200 ms between them.', vals:['turns 545 / 550 / 560 ms','forward 1000 / 1100 / 2200 ms','max acceleration']},
+    {k:'v3', n:'3 · Sonar', add:'Distance triggers each turn', do:'Drives at 0.25. Under 200 mm it stops for 1 s, turns for 550 ms in the next preset direction, then moves on. It reads the sensor every 250 ms.', vals:['< 200 mm','stop 1 s','turn 550 ms','poll 250 ms','speed 0.25']},
+    {k:'v4', n:'4 · Light', add:'Smoothed light reading', do:'Drives at 0.2 and stops once the average of the last 5 readings passes 100 lux, just short of the textbook.', vals:['average of last 5','100 lux','speed 0.2']}
+  ];
+  var tabs = $('#vtabs'), panel = $('#vpanel');
+  function showV(i){
+    $$('button', tabs).forEach(function(b,j){ b.setAttribute('aria-selected', j === i ? 'true' : 'false'); b.tabIndex = j === i ? 0 : -1; });
+    var v = V[i];
+    panel.innerHTML = '<div><div class="label">What it added</div><h3>'+v.add+'</h3></div><div><div class="label">What the code does</div><p style="margin-top:6px">'+v.do+'</p><div class="vals">'+v.vals.map(function(s){ return '<span>'+s+'</span>'; }).join('')+'</div></div>';
+  }
+  V.forEach(function(v,i){ var b = document.createElement('button'); b.type='button'; b.setAttribute('role','tab'); b.textContent = v.n; b.addEventListener('click', function(){ showV(i); }); tabs.appendChild(b); });
+  tabs.addEventListener('keydown', function(e){ var bs = $$('button',tabs), i = bs.findIndex(function(b){ return b.getAttribute('aria-selected') === 'true'; }); if (e.key === 'ArrowRight') { showV((i+1)%bs.length); bs[(i+1)%bs.length].focus(); } if (e.key === 'ArrowLeft') { showV((i+bs.length-1)%bs.length); bs[(i+bs.length-1)%bs.length].focus(); } });
+  showV(0);
+
+  /* ---------- flowchart + replay ---------- */
+  var fc = $('#fc'), g = '';
+  var rowA = [['start','Start','t'],['s1','Straight'],['l','Turn left'],['s2','Straight'],['r1','Turn right'],['s3','Straight'],['r2','Turn right'],['s4','Straight']];
+  rowA.forEach(function(n,i){ var x = 8 + i*91; g += '<g id="n-'+n[0]+'"><rect class="'+(n[2]?'nt':'nb')+'" x="'+x+'" y="13" width="72" height="30" rx="'+(n[2]?15:2)+'"/><text class="'+(n[2]?'tt':'')+'" x="'+(x+36)+'" y="32">'+n[1]+'</text></g>'; if (i < 7) g += '<path class="ed" d="M'+(x+72)+' 28H'+(x+91)+'" marker-end="url(#fa)"/>'; });
+  g += '<path class="ed" d="M681 43V78" marker-end="url(#fa)"/>';
+  g += '<g id="n-get"><path class="nb" d="M619 78H717L703 114H605Z"/><text x="661" y="100">Get distance</text></g>';
+  g += '<g id="n-d1"><path class="nd" d="M455 96L520 64L585 96L520 128Z"/><text x="520" y="93">Distance</text><text x="520" y="105">&lt; 200 mm?</text></g>';
+  g += '<g id="n-add"><rect class="nb" x="300" y="78" width="110" height="36" rx="2"/><text x="355" y="93">Add 1 to</text><text x="355" y="105">turn count</text></g>';
+  g += '<g id="n-d2"><path class="nd" d="M170 96L230 64L290 96L230 128Z"/><text x="230" y="93">Turn count</text><text x="230" y="105">&gt; 3?</text></g>';
+  g += '<g id="n-turn"><rect class="nb" x="8" y="78" width="122" height="36" rx="2"/><text x="69" y="93">Turn in next</text><text x="69" y="105">specified direction</text></g>';
+  g += '<g id="n-moveB"><rect class="nb" x="470" y="142" width="100" height="28" rx="2"/><text x="520" y="160">Move straight</text></g>';
+  g += '<g id="n-store"><path class="nb" d="M184 197H290L276 233H170Z"/><text x="230" y="219">Store light level</text></g>';
+  g += '<g id="n-d3"><path class="nd" d="M330 215L400 183L470 215L400 247Z"/><text x="400" y="212">Last 5 readings</text><text x="400" y="224">&gt;= 100 lux?</text></g>';
+  g += '<g id="n-moveC"><rect class="nb" x="345" y="262" width="110" height="28" rx="2"/><text x="400" y="280">Move straight</text></g>';
+  g += '<g id="n-stop"><rect class="nb" x="520" y="197" width="60" height="36" rx="2"/><text x="550" y="219">Stop</text></g>';
+  g += '<g id="n-end"><rect class="nt" x="612" y="197" width="60" height="36" rx="18"/><text class="tt" x="642" y="219">End</text></g>';
+  g += '<g class="ed2" fill="none" marker-end="url(#fa)">' +
+       '<path class="ed" d="M612 96H585" marker-end="url(#fa)"/><path class="ed" d="M455 96H410" marker-end="url(#fa)"/><path class="ed" d="M300 96H290" marker-end="url(#fa)"/><path class="ed" d="M170 96H130" marker-end="url(#fa)"/>' +
+       '<path class="ed" d="M520 128V142" marker-end="url(#fa)"/><path class="ed" d="M570 156H661V114" marker-end="url(#fa)"/><path class="ed" d="M69 114V318H690V114" marker-end="url(#fa)"/>' +
+       '<path class="ed" d="M230 128V197" marker-end="url(#fa)"/><path class="ed" d="M283 215H330" marker-end="url(#fa)"/><path class="ed" d="M470 215H520" marker-end="url(#fa)"/><path class="ed" d="M580 215H612" marker-end="url(#fa)"/>' +
+       '<path class="ed" d="M400 247V262" marker-end="url(#fa)"/><path class="ed" d="M345 276H230V233" marker-end="url(#fa)"/></g>';
+  g += '<text class="yn" x="433" y="90">Yes</text><text class="yn" x="150" y="90">No</text><text class="yn" x="533" y="139" style="text-anchor:start">No</text><text class="yn" x="238" y="165" style="text-anchor:start">Yes</text><text class="yn" x="494" y="209">Yes</text><text class="yn" x="408" y="258" style="text-anchor:start">No</text>';
+  g += '<text class="cp" x="78" y="143">sonar loop</text><text class="cp" x="78" y="209">light loop</text><text class="cp" x="8" y="62">timed moves</text>';
+  fc.innerHTML = '<defs><marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--fg)"/></marker></defs>' + g;
+  var trace = [['start','Timed moves'],['s1','Timed moves'],['l','Timed moves'],['s2','Timed moves'],['r1','Timed moves'],['s3','Timed moves'],['r2','Timed moves'],['s4','Timed moves'],
+    ['get','Sonar loop: read distance'],['d1','Sonar loop: nothing close'],['moveB','Sonar loop: keep driving'],['get','Sonar loop: read distance'],['d1','Sonar loop: obstacle under 200 mm'],['add','Sonar loop: count the stop'],['d2','Sonar loop: more stops to make'],['turn','Sonar loop: turn'],
+    ['get','Sonar loop: read distance'],['d1','Sonar loop: obstacle under 200 mm'],['add','Sonar loop: count the stop'],['d2','Sonar loop: enough turns made'],
+    ['store','Light loop: store the reading'],['d3','Light loop: not bright enough yet'],['moveC','Light loop: creep forward'],['store','Light loop: store the reading'],['d3','Light loop: average at 100 lux'],['stop','Light loop: stop short of the textbook'],['end','Done']];
+  var timer = null, idx = 0, btn = $('#run-btn'), cap = $('#cap');
+  function clearOn(){ $$('#fc g.on').forEach(function(n){ n.classList.remove('on'); }); }
+  function stopRun(label){ clearInterval(timer); timer = null; btn.textContent = '▶ Run'; if (label) cap.textContent = label; }
+  function tick(){
+    clearOn();
+    if (idx >= trace.length){ stopRun('Replay finished. The real run repeats each loop as many times as it needs.'); return; }
+    var t = trace[idx++]; $('#n-' + t[0]).classList.add('on'); cap.textContent = t[1];
+  }
+  btn.addEventListener('click', function(){
+    if (timer){ stopRun('Paused.'); return; }
+    if (idx >= trace.length) idx = 0;
+    btn.textContent = '❚❚ Pause'; tick(); timer = setInterval(tick, reduce ? 900 : 520);
+  });
+})();
+</script>
+<section class="s"><div class="wrap"><p class="label">Source code and the full demo video are available on request.</p></div></section>
+<section class="s"><div class="wrap pnav"><a class="prev" href="../portfolio.html"><span class="label">← Back</span><b>All projects</b></a><a class="next" href="gripper.html"><span class="label">Next →</span><b>Q-Arm gripper</b></a></div></section>
+<style>
+.pnav{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.pnav a{ display:block; padding:18px 20px; border:1px solid var(--line2); border-radius:4px; text-decoration:none; color:var(--fg); background:var(--panel); }
+.pnav a:hover{ border-color:var(--accent); } .pnav a.next{ text-align:right; }
+.pnav b{ display:block; margin-top:4px; font-family:var(--display); font-size:1.1rem; font-weight:600; }
+@media (max-width:600px){ .pnav{ grid-template-columns:1fr; } .pnav a.next{ text-align:left; } }
+</style>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <div>
+      <p class="label">Krrish Shah · Mechanical Engineering and Management, McMaster University</p>
+      <p class="muted" style="margin-top:8px;font-size:.9rem">Built by hand with plain HTML and CSS. No trackers.</p>
+    </div>
+    <ul>
+      <li><a href="../portfolio.html">Portfolio</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+      <li><a href="https://www.linkedin.com/in/krrish-shah" rel="me noopener" target="_blank">LinkedIn</a></li>
+      <li><button class="theme-btn" id="theme" type="button">Light mode</button></li>
+    </ul>
+  </div>
+</footer>
+<script src="../js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en" class="js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Q-Arm Warehouse Gripper | Krrish Shah</title>
+<meta name="description" content="Krrish Shah's first-year engineering design project: a gear-synchronised 3D-printed gripper for the Q-Arm robotic arm, with linkage model, grip-force analysis and project leadership.">
+<link rel="canonical" href="https://krrishshah.com/projects/gripper.html">
+<meta property="og:title" content="Q-Arm Warehouse Gripper | Krrish Shah">
+<meta property="og:description" content="Krrish Shah's first-year engineering design project: a gear-synchronised 3D-printed gripper for the Q-Arm robotic arm, with linkage model, grip-force analysis and project leadership.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://krrishshah.com/projects/gripper.html">
+<meta property="og:image" content="https://krrishshah.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="../css/project.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-bar">
+  <div class="wrap">
+    <a class="brand" href="../index.html">KRRISH SHAH /// <b>GRIPPER</b></a>
+    <nav class="site-nav" aria-label="Site"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../degree.html">Degree</a><a href="../portfolio.html" aria-current="page">Portfolio</a><a href="../fun.html">Fun</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+</header>
+<main id="main">
+<div class="sec-bar"><div class="wrap"><span class="who">PROJECT 02 · GRIPPER</span><nav aria-label="Sections"><a href="#brief">Brief</a><a href="#design">Design</a><a href="#mechanism">Mechanism</a><a href="#grip">Grip</a><a href="#software">Software</a><a href="#team">Team</a><a href="#reflection">Reflection</a></nav></div></div>
+
+<div class="hero p-hero">
+  <div class="wrap">
+    <div>
+      <div class="label eyebrow">First-year design project · Team of five · 9 weeks</div>
+      <h1>Q-Arm <em>Warehouse</em> Gripper</h1>
+      <p class="sub">An end effector that lets a robotic arm pick customer orders in a mock warehouse. Our team designed, 3D printed and programmed a gear-synchronised claw. I was the project manager and designed the gears, the friction pads and the final jaw shape.</p>
+      <div class="chips">
+        <div class="label">My role<strong>Project manager · mechanical design</strong></div>
+        <div class="label">Built with<strong>CAD, 3D printing, Q-Arm</strong></div>
+        <div class="label">Team<strong>Five engineers</strong></div>
+      </div>
+      <div class="btn-row"><a class="btn" href="gripper/assets/Gripper_Portfolio_Krrish_Shah.pdf" target="_blank" rel="noopener">Download the PDF</a><a class="btn ghost" href="#mechanism">Try the linkage model</a></div>
+    </div>
+    <figure>
+      <div class="frame"><span class="tag">Final build</span><img src="gripper/assets/g_photo.jpg" alt="The finished gripper: two dark 3D-printed jaws with taped rubber fingertips, linked to a meshing gear pair on a perforated platform" width="900" height="1237"></div>
+      <figcaption class="label">Two jaws, one actuator · gears keep both sides in step</figcaption>
+    </figure>
+  </div>
+</div>
+
+<section class="s" id="brief">
+  <div class="wrap">
+    <div class="label">The brief</div>
+    <h2>Pick a customer's order with a robotic arm</h2>
+    <p class="lede">The goal was an end effector for warehouse operations: a mechanism mounted on the Q-Arm that grabs items, identifies them and drops them into a basket to fill an order. That meant three phases brought together as one system: design, build and code.</p>
+    <dl class="spec">
+      <div><dt>Problem</dt><dd>Develop a mechanism that can grab and identify a variety of objects with maximum efficiency, while minimising material waste and physical strain.</dd></div>
+      <div><dt>Objective</dt><dd>A gripping claw that is lightweight and mobile, yet sturdy enough to lift objects of different weights, running alongside fully working code that completes the warehouse task.</dd></div>
+      <div><dt>Constraints</dt><dd>Minimise material waste and environmental impact. Keep cost and productivity efficient. Keep the workspace safe for every team member. Complete the assigned tasks quickly.</dd></div>
+      <div><dt>Function</dt><dd>Pick a selected number of items from a mixed set that differ in shape, size and mass, and move them to a basket to fulfil the user's order.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="s grid-bg" id="design">
+  <div class="wrap">
+    <div class="label">Design process</div>
+    <h2>From five ideas to one claw</h2>
+    <p class="lede">We started by sketching individual concepts, then merged the strongest features into one design. Click through the stages.</p>
+    <div class="evo"><div class="evo-tabs" role="tablist"><button type="button" role="tab">Stage 1<b>Sketch</b></button><button type="button" role="tab">Stage 2<b>CAD</b></button><button type="button" role="tab">Stage 3<b>Gears</b></button><button type="button" role="tab">Stage 4<b>Build</b></button></div><div class="evo-pane evo-body" role="tabpanel">
+  <button type="button" class="zoomer" data-zoom="gripper/assets/g_sketch.jpg" data-cap="Concept sketch · gears, actuator, rubber fingertip surfaces" style="padding:0;border:0;background:none;cursor:zoom-in"><img src="gripper/assets/g_sketch.jpg" alt="Hand sketch of the claw: gears and actuator on an effector platform, jaws with rubber surface and rubber band" loading="lazy"></button>
+  <div><div class="label">Stage 1</div><h3>Combining our concepts</h3><p>Each of us brought a design. The sketch merges them: two jaws driven through a gear pair by a single actuator, mounted on an effector platform, with a rubber surface and band at each fingertip.</p><div class="chg"><strong>Decision:</strong> one actuator drives both jaws through meshing gears, so the claw always closes symmetrically.</div></div>
+</div><div class="evo-pane evo-body" role="tabpanel">
+  <button type="button" class="zoomer" data-zoom="gripper/assets/g_cad.jpg" data-cap="Full CAD assembly on the perforated effector platform" style="padding:0;border:0;background:none;cursor:zoom-in"><img src="gripper/assets/g_cad.jpg" alt="CAD assembly of the claw on a perforated platform" loading="lazy"></button>
+  <div><div class="label">Stage 2</div><h3>Full assembly in CAD</h3><p>We modelled every part, checked the linkage moved freely, and prepared the files for 3D printing and laser cutting. The perforated platform keeps the part light and gives a grid of mounting points.</p><div class="chg"><strong>Built for:</strong> low material use, so only the parts that carry load are solid.</div></div>
+</div><div class="evo-pane evo-body" role="tabpanel">
+  <button type="button" class="zoomer" data-zoom="gripper/assets/g_gears.jpg" data-cap="My gear arms · each spur gear has its crank arm built in" style="padding:0;border:0;background:none;cursor:zoom-in"><img src="gripper/assets/g_gears.jpg" alt="CAD of the two gear arms, each a spur gear with an integrated crank arm and embossed team label" loading="lazy"></button>
+  <div><div class="label">Stage 3</div><h3>My contribution: the gear arms</h3><p>I designed the gears. Each is a spur gear with the crank arm built into the same part, so there is no joint to slip between gear and arm. The two mesh directly: when the actuator turns one, the other turns the opposite way by the same amount.</p><div class="chg"><strong>Why it matters:</strong> the jaws mirror each other, so an object is centred as the claw closes.</div></div>
+</div><div class="evo-pane evo-body" role="tabpanel">
+  <button type="button" class="zoomer" data-zoom="gripper/assets/g_photo.jpg" data-cap="Final build · printed parts, screws and nuts, padded fingertips" style="padding:0;border:0;background:none;cursor:zoom-in"><img src="gripper/assets/g_photo.jpg" alt="The finished printed gripper" loading="lazy"></button>
+  <div><div class="label">Stage 4</div><h3>Printed, assembled, padded</h3><p>The printed parts are joined with screws and nuts at every pivot. I added friction at the fingertips with rubber bands and padding, and shaped the final notched jaw profile.</p><div class="chg"><strong>My addition:</strong> the friction pads. Bare plastic slips; rubber grips. The Grip section below shows by how much.</div></div>
+</div></div>
+  </div>
+</section>
+
+<section class="s" id="mechanism">
+  <div class="wrap">
+    <div class="label">How it works</div>
+    <h2>Two four-bar linkages, one gear pair</h2>
+    <p class="lede">Each jaw is the moving link of a four-bar linkage: a crank on the gear, the jaw itself, and a short link back to a fixed pivot. Because the gears mesh, both cranks turn by equal and opposite amounts, so a single actuator closes both jaws in step.</p>
+    <div class="lab">
+      <div class="panel">
+        <header><span class="label">Linkage model · drag to open and close</span>
+          <div class="seg" role="group" aria-label="Animation"><button type="button" id="clawPlay" aria-pressed="false">▶ Cycle</button></div>
+        </header>
+        <div class="body lab-grid">
+          <svg id="claw" viewBox="-40 -60 955 1080" style="max-height:520px" role="img" aria-label="Model of the gripper linkage, opening and closing"></svg>
+          <div>
+            <div class="range"><label class="label" for="clawT">Open ↔ Closed</label><input id="clawT" type="range" min="0" max="1" step="0.005" value="0.42"><output id="clawPct">42%</output></div>
+            <div class="readout">
+              <div class="big"><span>Fingertip gap</span><strong id="clawGap"></strong></div>
+              <div><span>Each gear turns</span><strong id="clawRot"></strong></div>
+            </div>
+            <div class="legend">
+              <span><i style="background:var(--accent)"></i>Actuator gear</span>
+              <span><i style="background:var(--amber)"></i>Fixed pivots</span>
+              <span><i style="background:var(--amber-soft);border-color:var(--amber)"></i>Rubber pads</span>
+            </div>
+            <p class="src">Pivot positions are measured from the photo of the real gripper, and the motion is solved as two mirrored four-bar linkages. Gap is relative to fully open.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="terms" style="margin-top:20px">
+      <div class="term"><h3>Four-bar linkage</h3><p>Four rigid links joined by four pivots. Turning one link (the crank) moves the others along a fixed path. Here the jaw is the coupler, so it both rotates and moves inward as it closes.</p></div>
+      <div class="term"><h3>Meshing gears</h3><p>Two equal spur gears in mesh turn in opposite directions at the same speed. That ties the two linkages together, so one actuator drives both jaws.</p></div>
+      <div class="term root"><h3>Why symmetric</h3><p>If one jaw led the other, it would push the object sideways before the second jaw arrived. Mirrored motion meets the object from both sides at once and centres it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="s grid-bg" id="grip">
+  <div class="wrap">
+    <div class="label">Engineering check</div>
+    <h2>Why the friction pads mattered</h2>
+    <p class="lede">A claw holds an object by friction. Each jaw squeezes with a normal force N, and friction at both contacts has to carry the weight. Raise the friction coefficient μ and the same object needs far less squeeze, which means less load on the actuator and printed parts.</p>
+    <div class="lab">
+      <div class="panel">
+        <header><span class="label">Grip calculator</span>
+          <div class="seg" role="group" aria-label="Fingertip surface"><button type="button" data-mu="0.3" aria-pressed="false">Bare print</button><button type="button" data-mu="0.7" aria-pressed="true">Rubber pad</button></div>
+        </header>
+        <div class="body lab-grid">
+          <svg id="fbd" viewBox="0 0 520 330" style="max-height:360px" role="img" aria-label="Free-body diagram of an object held between two jaws"></svg>
+          <div>
+            <div class="range"><label class="label" for="mass">Object mass</label><input id="mass" type="range" min="20" max="500" step="5" value="150"><output id="massV">150 g</output></div>
+            <div class="readout">
+              <div><span>Weight, m·g</span><strong id="wV"></strong></div>
+              <div class="big"><span>Squeeze needed per jaw</span><strong id="nV"></strong></div>
+              <div><span>With bare print instead</span><strong id="nBare"></strong></div>
+            </div>
+            <p class="src" style="margin-top:12px">Condition to hold: 2·μ·N ≥ SF·m·g, so N = SF·m·g / (2μ), with safety factor SF = 2. μ ≈ 0.3 for hard plastic and ≈ 0.7 for rubber are typical textbook values used to show the trend, not measured on our parts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callout"><strong>Takeaway.</strong> Moving from bare plastic to rubber more than halves the clamping force needed for the same object (0.3 → 0.7 is a 57% reduction). That is why a strip of rubber was worth more than a stronger actuator.</div>
+  </div>
+</section>
+
+<section class="s" id="software">
+  <div class="wrap">
+    <div class="label">Software and integration</div>
+    <h2>Individual functions, one main program</h2>
+    <p class="lede">Each of us drew a flowchart and wrote functions for part of the Q-Arm's autonomous movement. We then combined them into a single main function that runs the whole order. Mine produces the order summary at the end.</p>
+    <ol class="steps">
+      <li><b>Take the order</b><span>Which items, and how many</span></li>
+      <li><b>Identify the item</b><span>Find the next object to pick</span></li>
+      <li><b>Move to pick</b><span>Arm moves the claw into position</span></li>
+      <li><b>Grip</b><span>Actuator closes the claw</span></li>
+      <li><b>Place in basket</b><span>Release, then repeat for the next item</span></li>
+      <li class="me"><b>Order summary</b><span>My function: reports what the customer's order contained</span></li>
+    </ol>
+    <p class="src" style="margin-top:18px">Simplified view of the program flow. Teal step is the function I wrote.</p>
+    <div class="callout amber"><strong>Lesson.</strong> We left combining everyone's functions until the last days, which left little room for debugging. Next time I'd integrate early and often, so problems show up while there is still time to fix them.</div>
+  </div>
+</section>
+
+<section class="s grid-bg" id="team">
+  <div class="wrap">
+    <div class="label">Team and leadership</div>
+    <h2>Project manager on a team of five</h2>
+    <p class="lede">Work was split by interest and skill level. As project manager I kept the team organised, and I also worked across CAD, building, testing and code wherever help was needed.</p>
+    <div class="contrib">
+      <div class="card"><div class="label">The team</div><h3>What we did together</h3><ul>
+        <li>Brainstormed individually, then merged our designs into one claw</li>
+        <li>Built the CAD model and prepared parts for 3D printing and laser cutting</li>
+        <li>Wrote flowcharts and functions for the Q-Arm's autonomous moves, then joined them into one main function</li>
+        <li>Ran test cases, collected data, and refined the mechanical and software parts after each round</li>
+      </ul></div>
+      <div class="card me"><div class="label">Me</div><h3>What I owned</h3><ul>
+        <li><strong>Project management:</strong> ran weekly meetings outside Design Studio and set realistic weekly goals</li>
+        <li><strong>Gears:</strong> designed the meshing gear arms that synchronise the jaws</li>
+        <li><strong>Grip:</strong> added the friction pads at the fingertips</li>
+        <li><strong>Jaw shape:</strong> set the final claw profile</li>
+        <li><strong>Code:</strong> wrote the order-summary function</li>
+      </ul></div>
+    </div>
+    <div class="split">
+      <div><h3 class="h">When the laser cutting fell through</h3><p class="muted" style="margin-top:10px">Our laser-cutting request wasn't approved until it was far too late to use. Instead of panicking, I pushed the team to stay calm and focus on our next best action with what we could still make. It taught me that when plans change suddenly, a clear head finds the fix faster.</p></div>
+      <div><h3 class="h">When deadlines slipped</h3><p class="muted" style="margin-top:10px">Some delegated tasks fell behind because we weren't communicating clearly. I set weekly goals, realistic deadlines and regular check-ins so everyone knew what was due and when. A team only succeeds as one when it works as one.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="reflection">
+  <div class="wrap">
+    <div class="label">Reflection</div>
+    <h2>What I took away</h2>
+    <blockquote class="pull"><p>For a team to succeed as one, it has to work together as one, and the foundation of that is healthy communication.</p><cite class="label">My first engineering project</cite></blockquote>
+    <div class="split">
+      <div><h3 class="h">Lessons I carry forward</h3><ul class="ticks" style="margin-top:12px">
+        <li>Open-mindedness and communication matter as much as technical skill.</li>
+        <li>Stay calm under sudden change and look for the next best action.</li>
+        <li>A team's pace changes its results. I still wonder whether more time pressure would have made our meetings sharper, or whether more time would have bought better testing.</li>
+      </ul></div>
+      <div><h3 class="h">What I'd do differently</h3><ul class="ticks" style="margin-top:12px">
+        <li>Combine everyone's code earlier, leaving real time for debugging.</li>
+        <li>Spend more time testing, so decisions rest on measured results rather than theory.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+<section class="s"><div class="wrap pnav"><a class="prev" href="rover.html"><span class="label">← Previous</span><b>Autonomous rover</b></a><a class="next" href="swing-a-box.html"><span class="label">Next →</span><b>SWING-A-BOX</b></a></div></section>
+<dialog class="lb" id="lb"><img src="" alt=""><p></p><button type="button">CLOSE</button></dialog>
+
+<script src="../js/claw.js"></script>
+<script src="../js/project.js"></script>
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* --- linkage --- */
+  var svg = document.getElementById('claw'), sl = document.getElementById('clawT'), play = document.getElementById('clawPlay');
+  var g0 = Claw.tipGap(0), g1 = Claw.tipGap(1), timer = null;
+  function setT(t){
+    Claw.draw(svg, t);
+    sl.value = t; document.getElementById('clawPct').textContent = Math.round(t*100) + '%';
+    document.getElementById('clawGap').textContent = Math.round(Claw.tipGap(t)/g0*100) + '% of open';
+    document.getElementById('clawRot').textContent = Math.round(t*0.95*180/Math.PI) + '° from open';
+  }
+  sl.addEventListener('input', function(){ stop(); setT(parseFloat(sl.value)); });
+  function stop(){ if (timer){ cancelAnimationFrame(timer); timer = null; play.setAttribute('aria-pressed','false'); play.textContent = '▶ Cycle'; } }
+  play.addEventListener('click', function(){
+    if (timer) return stop();
+    play.setAttribute('aria-pressed','true'); play.textContent = '❚❚ Pause';
+    var t0 = null, base = parseFloat(sl.value);
+    (function step(ts){ if (t0 === null) t0 = ts; var ph = (ts - t0)/2600 + Math.asin(base*2-1)/(2*Math.PI) ;
+      setT(0.5 + 0.5*Math.sin(ph*2*Math.PI)); timer = requestAnimationFrame(step); })(performance.now());
+  });
+  setT(0.42);
+
+  /* --- grip calculator --- */
+  var fbd = document.getElementById('fbd'), mass = document.getElementById('mass'), mu = 0.7, SF = 2;
+  function arrow(x1,y1,x2,y2,cls){ return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" class="'+cls+'" marker-end="url(#ah-'+cls+')"/>'; }
+  function drawFBD(N, W){
+    var nl = 24 + 76*Math.min(1, N/6), fl = 24 + 56*Math.min(1, W/5), wl = 24 + 70*Math.min(1, W/5);
+    fbd.innerHTML = '<defs>' + ['fn','ff','fw'].map(function(c){ return '<marker id="ah-'+c+'" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="'+c+'h"/></marker>'; }).join('') + '</defs>' +
+      '<rect x="80" y="40" width="34" height="230" rx="3" class="jawb"/><rect x="406" y="40" width="34" height="230" rx="3" class="jawb"/>' +
+      '<rect x="114" y="100" width="12" height="120" class="padb"/><rect x="394" y="100" width="12" height="120" class="padb"/>' +
+      '<rect x="126" y="100" width="268" height="120" rx="4" class="objb"/>' +
+      '<text x="260" y="186" text-anchor="middle" class="t-fg" font-size="14">object, m = '+mass.value+' g</text>' +
+      arrow(128,128,128+nl,128,'fn') + arrow(392,128,392-nl,128,'fn') +
+      '<text x="'+(136+nl)+'" y="133" class="t-accent" font-size="14">N</text><text x="'+(384-nl)+'" y="133" text-anchor="end" class="t-accent" font-size="14">N</text>' +
+      arrow(140,214,140,214-fl,'ff') + arrow(380,214,380,214-fl,'ff') +
+      '<text x="150" y="'+(214-fl/2+4)+'" class="t-amber" font-size="13">μN</text><text x="370" y="'+(214-fl/2+4)+'" text-anchor="end" class="t-amber" font-size="13">μN</text>' +
+      arrow(260,222,260,222+wl,'fw') + '<text x="272" y="'+(226+wl/2)+'" class="t-red" font-size="13">m·g</text>' +
+      '<text x="97" y="30" text-anchor="middle" class="t-muted" font-size="11">jaw</text><text x="423" y="30" text-anchor="middle" class="t-muted" font-size="11">jaw</text>' +
+      '<text x="260" y="62" text-anchor="middle" class="t-muted" font-size="11">same weight, '+(mu > 0.5 ? 'rubber pads: short N arrows' : 'bare print: long N arrows')+'</text>';
+  }
+  function upd(){
+    var m = parseFloat(mass.value)/1000, W = m*9.81, N = SF*W/(2*mu), Nb = SF*W/(2*0.3);
+    document.getElementById('massV').textContent = mass.value + ' g';
+    document.getElementById('wV').textContent = W.toFixed(2) + ' N';
+    document.getElementById('nV').textContent = N.toFixed(2) + ' N';
+    document.getElementById('nBare').textContent = Nb.toFixed(2) + ' N';
+    drawFBD(N, W);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-mu]'), function(b){
+    b.addEventListener('click', function(){ mu = parseFloat(b.dataset.mu);
+      Array.prototype.forEach.call(document.querySelectorAll('[data-mu]'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); upd(); });
+  });
+  mass.addEventListener('input', upd); upd();
+})();
+</script>
+<style>
+.jawb{ fill:var(--frame); } .padb{ fill:var(--amber); opacity:.7; } .objb{ fill:var(--panel2); stroke:var(--fg); stroke-width:1.5; }
+.fn{ stroke:var(--accent); stroke-width:3; } .fnh{ fill:var(--accent); }
+.ff{ stroke:var(--amber); stroke-width:3; } .ffh{ fill:var(--amber); }
+.fw{ stroke:var(--red); stroke-width:3; } .fwh{ fill:var(--red); }
+.terms{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+@media (max-width:860px){ .terms{ grid-template-columns:1fr; } }
+.term{ border:1px solid var(--line); border-radius:4px; padding:16px 18px; background:var(--panel); }
+.term h3{ font-family:var(--mono); font-weight:500; font-size:.76rem; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.term p{ font-size:.93rem; line-height:1.55; }
+.term.root{ background:var(--accent-soft); border-color:var(--accent); }
+</style>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <div>
+      <p class="label">Krrish Shah · Mechanical Engineering and Management, McMaster University</p>
+      <p class="muted" style="margin-top:8px;font-size:.9rem">Built by hand with plain HTML and CSS. No trackers.</p>
+    </div>
+    <ul>
+      <li><a href="../portfolio.html">Portfolio</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+      <li><a href="https://www.linkedin.com/in/krrish-shah" rel="me noopener" target="_blank">LinkedIn</a></li>
+      <li><button class="theme-btn" id="theme" type="button">Light mode</button></li>
+    </ul>
+  </div>
+</footer>
+<script src="../js/site.js"></script>
+</body>
+</html>
