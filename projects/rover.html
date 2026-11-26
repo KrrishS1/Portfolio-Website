@@ -6,17 +6,17 @@
 <title>Autonomous Obstacle-Course Rover | Krrish Shah</title>
 <meta name="description" content="Krrish Shah&#x27;s autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
 <meta name="theme-color" content="#07090C">
-<link rel="canonical" href="https://krrishshah.com/projects/rover.html">
+<link rel="canonical" href="https://krrishshah.com/projects/rover">
 <meta property="og:title" content="Autonomous Obstacle-Course Rover | Krrish Shah">
 <meta property="og:description" content="Krrish Shah&#x27;s autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://krrishshah.com/projects/rover.html">
+<meta property="og:url" content="https://krrishshah.com/projects/rover">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Open+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="/css/site.css">
 <style>
 /* Layout concept: a flight-data recorder. One dark console, a live readout bar that tracks the section,
    teal for signal, amber for the failure story, blueprint grid behind the engineering drawings. */
@@ -250,8 +250,8 @@ footer.end .sig{ margin-top:28px; }
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-bar">
   <div class="wrap">
-    <a class="brand" href="../index.html">Krrish Shah</a>
-    <nav class="site-nav" aria-label="Site"><a href="../index.html">Home</a><a href="../portfolio.html" aria-current="page">Projects</a><a href="../clubs.html">Clubs</a><a href="../contact.html">Contact</a><a href="../resume.pdf" target="_blank" rel="noopener">Resume</a></nav>
+    <a class="brand" href="/">Krrish Shah</a>
+    <nav class="site-nav" aria-label="Site"><a href="/">Home</a><a href="/projects" aria-current="page">Projects</a><a href="/clubs">Clubs</a><a href="/contact">Contact</a><a href="/resume.pdf" target="_blank" rel="noopener">Resume</a></nav>
   </div>
 </header>
 <main id="main">
@@ -277,11 +277,11 @@ footer.end .sig{ margin-top:28px; }
         <div class="label">Built with<strong>CAD, 3D printing, Phidgets, Java</strong></div>
         <div class="label">Result<strong>All 6 stages cleared</strong></div>
       </div>
-      <div class="btn-row"><a class="btn" href="rover/assets/Rover_Portfolio_Krrish_Shah.pdf" target="_blank" rel="noopener">Download the PDF</a></div>
+      <div class="btn-row"><a class="btn" href="/projects/rover/assets/Rover_Portfolio_Krrish_Shah.pdf" target="_blank" rel="noopener">Download the PDF</a></div>
     </div>
     <figure class="monitor">
       <div class="screen">
-        <video id="run" src="rover/assets/rover_run.mp4" poster="rover/assets/poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Top-down recording of the rover completing the obstacle course"></video>
+        <video id="run" src="/projects/rover/assets/rover_run.mp4" poster="/projects/rover/assets/poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Top-down recording of the rover completing the obstacle course"></video>
         <div class="hud" aria-hidden="true">
           <div class="scan"></div>
           <span class="tl"><i></i>REC</span><span class="tr" id="tc">00:00 / 00:51</span>
@@ -311,8 +311,8 @@ footer.end .sig{ margin-top:28px; }
     </div>
 
     <div class="split" style="margin-top:56px">
-      <figure><div class="photo"><img src="rover/assets/rover.jpg" alt="The assembled rover with motor controller, wireless hub and battery pack" width="1100" height="694"></div><figcaption class="label">The machine · motor controller, wireless hub, battery pack, four driven wheels</figcaption></figure>
-      <figure><div class="photo"><img src="rover/assets/course.jpg" alt="Top-down view of the course made from textbooks standing on edge" width="900" height="506" loading="lazy"></div><figcaption class="label">The course from above · textbooks stand on edge to form the walls</figcaption></figure>
+      <figure><div class="photo"><img src="/projects/rover/assets/rover.jpg" alt="The assembled rover with motor controller, wireless hub and battery pack" width="1100" height="694"></div><figcaption class="label">The machine · motor controller, wireless hub, battery pack, four driven wheels</figcaption></figure>
+      <figure><div class="photo"><img src="/projects/rover/assets/course.jpg" alt="Top-down view of the course made from textbooks standing on edge" width="900" height="506" loading="lazy"></div><figcaption class="label">The course from above · textbooks stand on edge to form the walls</figcaption></figure>
     </div>
   </div>
 </section>
@@ -350,10 +350,10 @@ footer.end .sig{ margin-top:28px; }
         <div>Folded size<strong>150 × 120 mm</strong></div>
         <div>Mass<strong>62 g</strong></div>
       </div>
-      <button class="zoom" id="zoom" type="button" aria-label="Enlarge the CAD drawing"><img src="rover/assets/cad.png" alt="CAD of the main frame: isometric views from above and underneath, the flat printed blank with bend lines, and the folded top view with dimensions" width="1760" height="1320" loading="lazy"></button>
+      <button class="zoom" id="zoom" type="button" aria-label="Enlarge the CAD drawing"><img src="/projects/rover/assets/cad.png" alt="CAD of the main frame: isometric views from above and underneath, the flat printed blank with bend lines, and the folded top view with dimensions" width="1760" height="1320" loading="lazy"></button>
       <figcaption class="label">Main frame · top: from above and underneath (motor bays) · bottom left: flat printed blank, bend lines in red (mm) · bottom right: folded top view · click to enlarge</figcaption>
     </figure>
-    <dialog class="lb" id="lb"><img src="rover/assets/cad.png" alt="Enlarged CAD drawing of the main frame"><button type="button" id="lbx">CLOSE</button></dialog>
+    <dialog class="lb" id="lb"><img src="/projects/rover/assets/cad.png" alt="Enlarged CAD drawing of the main frame"><button type="button" id="lbx">CLOSE</button></dialog>
   </div>
 </section>
 
@@ -487,12 +487,12 @@ footer.end .sig{ margin-top:28px; }
     <p class="lede">The rover cleared all six stages on the demo run, finishing by pushing the textbook clear of the line.</p>
 
     <div class="frames">
-      <figure><img src="rover/assets/frame_00.jpg" alt="Start of the run" loading="lazy"><figcaption class="label"><b>0:00</b>Start</figcaption></figure>
-      <figure><img src="rover/assets/frame_10.jpg" alt="Rover entering the course" loading="lazy"><figcaption class="label"><b>0:10</b>Into the course</figcaption></figure>
-      <figure><img src="rover/assets/frame_20.jpg" alt="Rover between the walls" loading="lazy"><figcaption class="label"><b>0:20</b>Between walls</figcaption></figure>
-      <figure><img src="rover/assets/frame_30.jpg" alt="Rover turning through the course" loading="lazy"><figcaption class="label"><b>0:30</b>Turning through</figcaption></figure>
-      <figure><img src="rover/assets/frame_40.jpg" alt="Lamp in view near the end" loading="lazy"><figcaption class="label"><b>0:40</b>Lamp in view</figcaption></figure>
-      <figure><img src="rover/assets/frame_47.jpg" alt="Finish" loading="lazy"><figcaption class="label"><b>0:47</b>Finish</figcaption></figure>
+      <figure><img src="/projects/rover/assets/frame_00.jpg" alt="Start of the run" loading="lazy"><figcaption class="label"><b>0:00</b>Start</figcaption></figure>
+      <figure><img src="/projects/rover/assets/frame_10.jpg" alt="Rover entering the course" loading="lazy"><figcaption class="label"><b>0:10</b>Into the course</figcaption></figure>
+      <figure><img src="/projects/rover/assets/frame_20.jpg" alt="Rover between the walls" loading="lazy"><figcaption class="label"><b>0:20</b>Between walls</figcaption></figure>
+      <figure><img src="/projects/rover/assets/frame_30.jpg" alt="Rover turning through the course" loading="lazy"><figcaption class="label"><b>0:30</b>Turning through</figcaption></figure>
+      <figure><img src="/projects/rover/assets/frame_40.jpg" alt="Lamp in view near the end" loading="lazy"><figcaption class="label"><b>0:40</b>Lamp in view</figcaption></figure>
+      <figure><img src="/projects/rover/assets/frame_47.jpg" alt="Finish" loading="lazy"><figcaption class="label"><b>0:47</b>Finish</figcaption></figure>
     </div>
 
     <div class="three">
@@ -669,7 +669,7 @@ footer.end .sig{ margin-top:28px; }
 })();
 </script>
 <section class="s"><div class="wrap"><p class="label">Source code and the full demo video are available on request.</p></div></section>
-<section class="s"><div class="wrap pnav"><a class="prev" href="capsule-x.html"><span class="label">← Previous</span><b>Capsule X</b></a><a class="next" href="gripper.html"><span class="label">Next →</span><b>Q-Arm gripper</b></a></div></section>
+<section class="s"><div class="wrap pnav"><a class="prev" href="/projects/capsule-x"><span class="label">← Previous</span><b>Capsule X</b></a><a class="next" href="/projects/gripper"><span class="label">Next →</span><b>Q-Arm gripper</b></a></div></section>
 <style>
 .pnav{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .pnav a{ display:block; padding:18px 20px; border:1px solid var(--line2); border-radius:14px; text-decoration:none; color:var(--fg); background:var(--panel); }
@@ -678,6 +678,6 @@ footer.end .sig{ margin-top:28px; }
 @media (max-width:600px){ .pnav{ grid-template-columns:1fr; } .pnav a.next{ text-align:left; } }
 </style>
 </main>
-<script src="../js/site.js"></script>
+<script src="/js/site.js"></script>
 </body>
 </html>

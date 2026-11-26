@@ -1,5 +1,22 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "redirects": [
+    {
+      "source": "/portfolio",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio.html",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/",
+      "permanent": true
+    },
     {
       "source": "/about.html",
       "destination": "/",
@@ -11,12 +28,27 @@
       "permanent": true
     },
     {
+      "source": "/degree",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/degree.html",
       "destination": "/",
       "permanent": true
     },
     {
+      "source": "/school",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/school.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fun",
       "destination": "/",
       "permanent": true
     },
