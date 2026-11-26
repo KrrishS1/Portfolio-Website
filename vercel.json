@@ -12,12 +12,12 @@
     },
     {
       "source": "/degree.html",
-      "destination": "/#education",
+      "destination": "/",
       "permanent": true
     },
     {
       "source": "/school.html",
-      "destination": "/#education",
+      "destination": "/",
       "permanent": true
     },
     {
