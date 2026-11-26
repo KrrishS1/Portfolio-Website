@@ -147,3 +147,4 @@ td.n,th.n{ font-family:var(--mono); white-space:nowrap; text-align:right; }
 
 .end-space{ height:72px; }
 .reveal{ opacity:1 !important; transform:none !important; }
+.tl-logo img{ padding:3px; }
