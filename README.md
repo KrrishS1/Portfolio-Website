@@ -5,21 +5,19 @@ Plain HTML, CSS and JavaScript. No build step, no framework, nothing to install.
 ## Pages
 
 ```
-index.html               Home
-about.html               About me
-degree.html              Degree, courses, timeline
-portfolio.html           Engineering + Commerce project grids
-fun.html                 The non-resume page
-resume.html              Resume highlights + link to resume.pdf
-contact.html             Contact links
-projects/rover.html      Full rover write-up (interactive)
-projects/capsule-x.html  Placeholder for the next project
-404.html                 Not-found page
-css/site.css             One stylesheet for every page
-js/site.js               Progress bar, reveal animation, light/dark toggle
-assets/                  Site-wide images (favicon, og.png)
-projects/rover/assets/   Rover photos, CAD, video
-sitemap.xml, robots.txt  For Google
+index.html                 About + resume (home page)
+school.html                Degree, coursework, timeline, teams, competitions
+portfolio.html             All projects, filterable
+contact.html               Email, LinkedIn, resume
+projects/mec-2026.html     1st place, MEC 2026 consulting
+projects/capsule-x.html    Capsule X (CAD Designathon)
+projects/rover.html        Autonomous rover
+projects/gripper.html      Q-Arm gripper
+projects/swing-a-box.html  SWING-A-BOX
+css/site.css               Design system for every page
+css/project.css            Extra components for project pages
+js/site.js                 Progress bar, reveal, card glow, copy buttons
+vercel.json                Redirects from old page names
 ```
 
 ## Things marked for you to fill in

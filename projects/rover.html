@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Autonomous Obstacle-Course Rover | Krrish Shah</title>
-<meta name="description" content="Krrish Shah's autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
+<meta name="description" content="Krrish Shah&#x27;s autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
+<meta name="theme-color" content="#07090C">
 <link rel="canonical" href="https://krrishshah.com/projects/rover.html">
 <meta property="og:title" content="Autonomous Obstacle-Course Rover | Krrish Shah">
-<meta property="og:description" content="Krrish Shah's autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
+<meta property="og:description" content="Krrish Shah&#x27;s autonomous obstacle-course rover: CAD, 3D printing, PLA-to-PETG frame failure analysis, Phidgets electronics and Java control code.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://krrishshah.com/projects/rover.html">
-<meta property="og:image" content="https://krrishshah.com/assets/og.png">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;650;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/site.css">
 <style>
 /* Layout concept: a flight-data recorder. One dark console, a live readout bar that tracks the section,
@@ -24,13 +24,13 @@
 
 
 /* ---------- readout bar ---------- */
-.bar{ position:sticky; top:54px; z-index:50; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+.bar{ position:sticky; top:60px; z-index:50; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
 .bar .wrap{ display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:52px; }
 .bar .who{ font-family:var(--mono); font-size:.78rem; letter-spacing:.06em; white-space:nowrap; }
 .bar .who b{ color:var(--accent); font-weight:500; }
 .bar nav{ display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; }
 .bar nav::-webkit-scrollbar{ display:none; }
-.bar nav a{ font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:3px; white-space:nowrap; }
+.bar nav a{ font-family:var(--body); font-size:.72rem; letter-spacing:0;  color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:8px; white-space:nowrap; }
 .bar nav a:hover{ color:var(--fg); }
 .bar nav a[aria-current="true"]{ color:var(--accent-ink); background:var(--accent); }
 .progress{ height:2px; background:var(--line); }
@@ -88,7 +88,7 @@ h3.h{ font-size:1.15rem; font-weight:600; letter-spacing:-.01em; }
 .ticks li strong{ font-weight:600; }
 
 figure{ margin:0; }
-.photo{ border:1px solid var(--line2); border-radius:4px; overflow:hidden; background:var(--panel); }
+.photo{ border:1px solid var(--line2); border-radius:12px; overflow:hidden; background:var(--panel); }
 .photo img{ display:block; width:100%; height:auto; }
 figcaption{ margin-top:8px; }
 
@@ -104,7 +104,7 @@ figcaption{ margin-top:8px; }
 @media (max-width:520px){ .track{ grid-template-columns:1fr; } }
 
 /* ---------- drawing sheet ---------- */
-.sheet{ margin-top:48px; border:1px solid var(--line2); background:var(--panel); border-radius:4px; overflow:hidden; }
+.sheet{ margin-top:48px; border:1px solid var(--line2); background:var(--panel); border-radius:12px; overflow:hidden; }
 .titleblock{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-bottom:1px solid var(--line2); }
 .titleblock div{ padding:12px 16px; border-right:1px solid var(--line); }
 .titleblock div:last-child{ border-right:0; }
@@ -115,16 +115,16 @@ figcaption{ margin-top:8px; }
 .sheet figcaption{ padding:12px 16px 14px; margin:0; border-top:1px solid var(--line); }
 dialog.lb{ border:0; padding:0; background:transparent; max-width:96vw; max-height:96vh; }
 dialog.lb::backdrop{ background:rgba(0,0,0,.82); }
-dialog.lb img{ display:block; max-width:96vw; max-height:92vh; background:#fff; border-radius:4px; }
-dialog.lb button{ position:absolute; top:8px; right:8px; font-family:var(--mono); font-size:.75rem; letter-spacing:.1em; padding:8px 12px; border-radius:3px; border:1px solid var(--line2); background:var(--panel); color:var(--fg); cursor:pointer; }
+dialog.lb img{ display:block; max-width:96vw; max-height:92vh; background:#fff; border-radius:12px; }
+dialog.lb button{ position:absolute; top:8px; right:8px; font-family:var(--mono); font-size:.75rem; letter-spacing:.1em; padding:8px 12px; border-radius:8px; border:1px solid var(--line2); background:var(--panel); color:var(--fg); cursor:pointer; }
 
 /* ---------- failure lab ---------- */
 .lab{ margin-top:44px; display:grid; grid-template-columns:minmax(0,1fr); gap:20px; }
-.panel{ border:1px solid var(--line2); background:var(--panel); border-radius:4px; }
+.panel{ border:1px solid var(--line2); background:var(--panel); border-radius:12px; }
 .panel > header{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--line); }
 .panel .body{ padding:16px; }
-.seg{ display:inline-flex; border:1px solid var(--line2); border-radius:4px; overflow:hidden; }
-.seg button{ font-family:var(--mono); font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; padding:8px 14px; background:transparent; color:var(--muted); border:0; cursor:pointer; }
+.seg{ display:inline-flex; border:1px solid var(--line2); border-radius:12px; overflow:hidden; }
+.seg button{ font-family:var(--body); font-size:.74rem; letter-spacing:0;  padding:8px 14px; background:transparent; color:var(--muted); border:0; cursor:pointer; }
 .seg button + button{ border-left:1px solid var(--line2); }
 .seg button[aria-pressed="true"]{ background:var(--accent); color:var(--accent-ink); }
 .seg button[data-mat="pla"][aria-pressed="true"]{ background:var(--amber); color:#1d1300; }
@@ -132,7 +132,7 @@ dialog.lb button{ position:absolute; top:8px; right:8px; font-family:var(--mono)
 @media (max-width:860px){ .tilt-wrap{ grid-template-columns:1fr; } }
 .tilt-wrap .note{ font-size:.95rem; color:var(--muted); }
 .tilt-wrap .note strong{ color:var(--fg); font-weight:600; }
-.tilt-wrap .state{ margin-bottom:10px; display:flex; gap:8px; align-items:center; font-family:var(--mono); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; }
+.tilt-wrap .state{ margin-bottom:10px; display:flex; gap:8px; align-items:center; font-family:var(--body); font-size:.78rem; letter-spacing:0;  }
 .state i{ width:9px; height:9px; border-radius:50%; background:var(--accent); }
 .state.warn i{ background:var(--amber); }
 
@@ -147,30 +147,30 @@ svg text{ font-family:var(--mono); }
 .range label{ white-space:nowrap; }
 input[type=range]{ flex:1; min-width:0; accent-color:var(--accent); height:28px; }
 .readouts{ display:grid; gap:12px; }
-.ro{ border:1px solid var(--line); border-radius:4px; padding:12px 14px; background:var(--bg); }
-.ro h4{ margin:0 0 8px; font-family:var(--mono); font-weight:500; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; display:flex; justify-content:space-between; gap:8px; }
+.ro{ border:1px solid var(--line); border-radius:12px; padding:12px 14px; background:var(--bg); }
+.ro h4{ margin:0 0 8px; font-family:var(--body); font-weight:500; font-size:.75rem; letter-spacing:0;  display:flex; justify-content:space-between; gap:8px; }
 .ro.pla h4{ color:var(--amber); } .ro.petg h4{ color:var(--accent); }
 .ro dl{ margin:0; display:grid; grid-template-columns:auto 1fr; gap:3px 14px; font-size:.9rem; }
 .ro dt{ color:var(--muted); } .ro dd{ margin:0; font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums; }
-.ro .st{ font-family:var(--mono); font-size:.7rem; padding:2px 8px; border-radius:3px; letter-spacing:.06em; }
+.ro .st{ font-family:var(--mono); font-size:.7rem; padding:2px 8px; border-radius:8px; letter-spacing:.06em; }
 .ro.pla .st{ background:var(--amber-soft); color:var(--amber); } .ro.petg .st{ background:var(--accent-soft); color:var(--accent); }
 
 .terms{ margin-top:36px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
 @media (max-width:980px){ .terms{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:600px){ .terms{ grid-template-columns:1fr; } }
-.term{ border:1px solid var(--line); border-radius:4px; padding:16px 18px; background:var(--panel); }
-.term h3{ font-family:var(--mono); font-weight:500; font-size:.76rem; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.term{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--panel); }
+.term h3{ font-family:var(--body); font-weight:500; font-size:.76rem; letter-spacing:0;  color:var(--accent); margin-bottom:8px; }
 .term p{ font-size:.93rem; line-height:1.55; color:var(--fg); }
 .term.root{ background:var(--accent-soft); border-color:var(--accent); }
-.tablewrap{ overflow-x:auto; margin-top:30px; border:1px solid var(--line2); border-radius:4px; background:var(--panel); }
+.tablewrap{ overflow-x:auto; margin-top:30px; border:1px solid var(--line2); border-radius:12px; background:var(--panel); }
 table{ width:100%; border-collapse:collapse; font-size:.93rem; min-width:620px; }
-th{ text-align:left; font-family:var(--mono); font-weight:500; font-size:.72rem; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); padding:12px 16px; border-bottom:1px solid var(--line2); background:var(--panel2); }
+th{ text-align:left; font-family:var(--body); font-weight:500; font-size:.72rem; letter-spacing:0;  color:var(--muted); padding:12px 16px; border-bottom:1px solid var(--line2); background:var(--panel2); }
 td{ padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top; }
 tr:last-child td{ border-bottom:0; }
 td:first-child{ font-weight:600; }
 td.n{ font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; }
 .src{ margin-top:12px; font-size:.82rem; color:var(--muted); max-width:90ch; }
-.callout{ margin-top:30px; padding:18px 20px; border:1px solid var(--accent); background:var(--accent-soft); border-radius:4px; max-width:75ch; }
+.callout{ margin-top:30px; padding:18px 20px; border:1px solid var(--accent); background:var(--accent-soft); border-radius:12px; max-width:75ch; }
 .callout.amber{ border-color:var(--amber); background:var(--amber-soft); }
 .callout strong{ font-weight:600; }
 
@@ -184,23 +184,23 @@ td.n{ font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:no
 .parts{ margin-top:34px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
 @media (max-width:980px){ .parts{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:600px){ .parts{ grid-template-columns:1fr; } }
-.part{ border:1px solid var(--line); border-radius:4px; padding:16px 18px; background:var(--panel); }
+.part{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--panel); }
 .part h3{ font-size:1rem; font-weight:600; }
 .part .label{ display:block; margin-bottom:8px; }
 .part p{ margin-top:6px; font-size:.92rem; color:var(--muted); line-height:1.5; }
 
 /* ---------- software ---------- */
 .tabs{ display:flex; flex-wrap:wrap; gap:8px; margin-top:44px; }
-.tabs button{ font-family:var(--mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; padding:10px 14px; border:1px solid var(--line2); background:var(--panel); color:var(--muted); border-radius:4px; cursor:pointer; }
+.tabs button{ font-family:var(--body); font-size:.76rem; letter-spacing:0;  padding:10px 14px; border:1px solid var(--line2); background:var(--panel); color:var(--muted); border-radius:12px; cursor:pointer; }
 .tabs button[aria-selected="true"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
-.vpanel{ margin-top:14px; display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:30px; padding:22px; border:1px solid var(--line2); border-radius:4px; background:var(--panel); }
+.vpanel{ margin-top:14px; display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:30px; padding:22px; border:1px solid var(--line2); border-radius:12px; background:var(--panel); }
 @media (max-width:760px){ .vpanel{ grid-template-columns:1fr; gap:16px; } }
 .vpanel h3{ font-size:1.5rem; letter-spacing:-.02em; margin-top:6px; }
 .vpanel .vals{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-.vals span{ font-family:var(--mono); font-size:.78rem; padding:4px 9px; border-radius:3px; background:var(--accent-soft); color:var(--accent); font-variant-numeric:tabular-nums; }
+.vals span{ font-family:var(--mono); font-size:.78rem; padding:4px 9px; border-radius:8px; background:var(--accent-soft); color:var(--accent); font-variant-numeric:tabular-nums; }
 .runner{ margin-top:34px; }
 .runner .panel > header .cap{ font-family:var(--mono); font-size:.76rem; color:var(--muted); letter-spacing:.06em; min-height:1.3em; }
-.btn{ font-family:var(--mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; padding:9px 16px; border:0; border-radius:4px; background:var(--accent); color:var(--accent-ink); cursor:pointer; }
+.btn{ font-family:var(--body); font-size:.76rem; letter-spacing:0;  padding:9px 16px; border:0; border-radius:12px; background:var(--accent); color:var(--accent-ink); cursor:pointer; }
 .fc{ overflow-x:auto; padding:14px 8px; }
 .fc svg{ min-width:700px; width:100%; display:block; }
 .fc .nb{ fill:var(--panel2); stroke:var(--fg); stroke-width:1.2; transition:fill .2s, stroke .2s; }
@@ -217,7 +217,7 @@ td.n{ font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:no
 /* ---------- results ---------- */
 .frames{ margin-top:40px; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; }
 @media (max-width:860px){ .frames{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
-.frames figure img{ display:block; width:100%; aspect-ratio:9/14; object-fit:cover; border:1px solid var(--line2); border-radius:3px; }
+.frames figure img{ display:block; width:100%; aspect-ratio:9/14; object-fit:cover; border:1px solid var(--line2); border-radius:8px; }
 .frames figcaption b{ display:block; color:var(--fg); font-weight:500; }
 .three{ margin-top:44px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px; }
 @media (max-width:760px){ .three{ grid-template-columns:1fr; gap:24px; } }
@@ -230,22 +230,21 @@ footer.end .sig{ margin-top:28px; }
   .hud .scan,.hud .tl i,.flow{ animation:none; }
 }
 </style>
+<style>.bar{ background:rgba(7,9,12,.72) !important; } .bar .who{ font-family:var(--body); letter-spacing:0; } .bar nav a{ font-family:var(--body) !important; letter-spacing:0 !important; text-transform:none !important; font-size:.84rem !important; border-radius:7px !important; } .bar nav a[aria-current="true"]{ color:var(--fg) !important; background:var(--accent-soft) !important; box-shadow:inset 0 0 0 1px var(--accent-line); } .hud{ font-family:var(--mono); }</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-bar">
   <div class="wrap">
-    <a class="brand" href="../index.html">KRRISH SHAH /// <b>ROVER</b></a>
-    <nav class="site-nav" aria-label="Site"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../degree.html">Degree</a><a href="../portfolio.html" aria-current="page">Portfolio</a><a href="../fun.html">Fun</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav>
+    <a class="brand" href="../index.html"><span class="mk">KS</span><span class="nm">Krrish Shah</span></a>
+    <nav class="site-nav" aria-label="Site"><a href="../index.html">About</a><a href="../school.html">School</a><a href="../portfolio.html" aria-current="page">Portfolio</a><a href="../contact.html">Contact</a><a class="cta" href="../resume.pdf" target="_blank" rel="noopener">Resume</a></nav>
   </div>
   <div class="progress" aria-hidden="true"><i id="prog"></i></div>
 </header>
 <main id="main">
-
-
 <header class="bar sec-bar">
   <div class="wrap">
-    <div class="who"><span>SECTIONS</span></div>
+    <div class="who"><span>Autonomous rover</span></div>
     <nav aria-label="Sections" id="nav">
       <a href="#brief">Brief</a><a href="#mechanical">Mechanical</a><a href="#failure">Failure</a><a href="#electronics">Electronics</a><a href="#software">Software</a><a href="#results">Results</a>
     </nav>
@@ -741,10 +740,10 @@ footer.end .sig{ margin-top:28px; }
 })();
 </script>
 <section class="s"><div class="wrap"><p class="label">Source code and the full demo video are available on request.</p></div></section>
-<section class="s"><div class="wrap pnav"><a class="prev" href="../portfolio.html"><span class="label">← Back</span><b>All projects</b></a><a class="next" href="gripper.html"><span class="label">Next →</span><b>Q-Arm gripper</b></a></div></section>
+<section class="s"><div class="wrap pnav"><a class="prev" href="capsule-x.html"><span class="label">← Previous</span><b>Capsule X</b></a><a class="next" href="gripper.html"><span class="label">Next →</span><b>Q-Arm gripper</b></a></div></section>
 <style>
 .pnav{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.pnav a{ display:block; padding:18px 20px; border:1px solid var(--line2); border-radius:4px; text-decoration:none; color:var(--fg); background:var(--panel); }
+.pnav a{ display:block; padding:18px 20px; border:1px solid var(--line2); border-radius:14px; text-decoration:none; color:var(--fg); background:var(--panel); }
 .pnav a:hover{ border-color:var(--accent); } .pnav a.next{ text-align:right; }
 .pnav b{ display:block; margin-top:4px; font-family:var(--display); font-size:1.1rem; font-weight:600; }
 @media (max-width:600px){ .pnav{ grid-template-columns:1fr; } .pnav a.next{ text-align:left; } }
@@ -752,16 +751,12 @@ footer.end .sig{ margin-top:28px; }
 </main>
 <footer class="site-foot">
   <div class="wrap">
-    <div>
-      <p class="label">Krrish Shah · Mechanical Engineering and Management, McMaster University</p>
-      <p class="muted" style="margin-top:8px;font-size:.9rem">Built by hand with plain HTML and CSS. No trackers.</p>
-    </div>
+    <p class="label">© Krrish Shah · Mechanical Engineering and Management, McMaster University</p>
     <ul>
       <li><a href="../portfolio.html">Portfolio</a></li>
-      <li><a href="../resume.html">Resume</a></li>
-      <li><a href="../contact.html">Contact</a></li>
+      <li><a href="../resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+      <li><a href="mailto:shahkrrish07@gmail.com">Email</a></li>
       <li><a href="https://www.linkedin.com/in/krrish-shah" rel="me noopener" target="_blank">LinkedIn</a></li>
-      <li><button class="theme-btn" id="theme" type="button">Light mode</button></li>
     </ul>
   </div>
 </footer>

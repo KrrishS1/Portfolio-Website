@@ -1,0 +1,24 @@
+{
+  "redirects": [
+    {
+      "source": "/about.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/resume.html",
+      "destination": "/#resume",
+      "permanent": true
+    },
+    {
+      "source": "/degree.html",
+      "destination": "/school.html",
+      "permanent": true
+    },
+    {
+      "source": "/fun.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
