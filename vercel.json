@@ -7,7 +7,7 @@
     },
     {
       "source": "/resume.html",
-      "destination": "/#resume",
+      "destination": "/",
       "permanent": true
     },
     {
