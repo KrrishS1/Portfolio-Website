@@ -1,4 +1,4 @@
-/* Shared behaviour: reading progress, reveal on scroll, card spotlight, copy buttons. */
+/* Shared behaviour: reveal on scroll, copy buttons. */
 {
   const root = document.documentElement;
   root.classList.add('js');
@@ -24,15 +24,6 @@
   } else {
     els.forEach(el => el.classList.add('in'));
   }
-
-  // Card spotlight follows the pointer
-  document.querySelectorAll('.card').forEach(c => {
-    c.addEventListener('pointermove', e => {
-      const r = c.getBoundingClientRect();
-      c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      c.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    });
-  });
 
   // Copy buttons: <button data-copy="text">
   document.querySelectorAll('[data-copy]').forEach(b => {

@@ -343,3 +343,28 @@ html.js .reveal.in{ opacity:1; transform:none; }
 @media (max-width:560px){ .edu-strip{ grid-template-columns:1fr; } .edu-strip > div + div{ border-left:0; border-top:1px solid var(--line); } }
 .club-idx{ grid-template-columns:repeat(5,minmax(0,1fr)); }
 @media (max-width:980px){ .club-idx{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ============================================================
+   v3: narrower, calmer, no hover motion
+   ============================================================ */
+.wrap{ max-width:980px; }
+.brand{ font-size:1rem; }
+.hero .wrap{ padding-block:72px 72px; }
+.hero h1{ margin-top:12px; font-size:clamp(2.6rem,6vw,4.4rem); }
+.intro{ margin-top:24px; font-size:1.08rem; }
+.intro p{ color:var(--muted); }
+.intro p + p{ margin-top:.9em; }
+.intro .avail{ color:var(--fg); }
+.edu-strip{ margin-top:48px; }
+/* no hover motion, glow or zoom anywhere */
+.card::before{ display:none !important; }
+a.card:hover, .btn:hover, .soc:hover, .club-idx a:hover, .pnav a:hover, .resume-doc:hover,
+a.card:hover .thumb img, .soc:hover .arr{ transform:none !important; }
+.btn, .card, .soc, .club-idx a, .pnav a, .card .thumb img, .soc .arr{ transition:none !important; }
+.btn:hover{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.btn.ghost:hover{ background:transparent; border-color:var(--line2); color:var(--fg); }
+a.card:hover, .soc:hover, .club-idx a:hover{ border-color:var(--line); }
+.mail a{ background:none !important; }
+.site-nav a{ transition:none; }
+@media (max-width:640px){ .site-nav .cta{ display:inline-block; margin-left:4px; padding:6px 9px; } }
+@media (max-width:480px){ .brand{ display:none; } .site-bar .wrap{ justify-content:center; } }
